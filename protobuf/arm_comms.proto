@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+enum Mode {
+    stop = 0;
+    start_sine = 1;
+    start_dc = 2;
+    start_custom = 3;
+};
+
+message bt_interrupt {
+    Mode command = 1;
+	int32 intended_duration = 2;
+	double frequency = 3;
+	double amplitude = 4;
+	repeated bytes audiodata = 5;
+    double offset = 6;
+} 
+
+// sent periodically to confirm operation on phone app.
+message bt_response {
+    Mode status = 1;
+	double impedance = 2;
+	double total_duration = 3;
+	int32 device_id = 4;
+}
+
+message logistical_data {
+    Mode status = 1;
+	int32 intended_duration = 2;
+	int32 total_duration = 3;
+}

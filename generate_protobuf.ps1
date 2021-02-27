@@ -1,0 +1,1 @@
+protoc -I="protobuf" --python_out=".\python_debugging\" .\protobuf\arm_comms.proto

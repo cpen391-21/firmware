@@ -1,3 +1,8 @@
+#DS5 settings
+.metadata/*
+
+
+
 # Logs
 logs
 *.log
