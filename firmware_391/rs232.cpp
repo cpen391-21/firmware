@@ -1,3 +1,4 @@
+#include "rs232.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -15,7 +16,8 @@
  * When we load the data in address UART_data, we load 4 memory addresses
  * (each 8 bits wide) into a 32-bit wide register
  */
-int putcharBluetooth(char c)
+
+int RS232::putchar(char c)
 {
 	// C should only be one byte
 	c = c & 0xFF;
@@ -28,7 +30,7 @@ int putcharBluetooth(char c)
 	return c;
 }
 
-int BluetoothGetChar()
+int RS232::getchar()
 {
 
 	unsigned int data = *(volatile unsigned int *)0xFF200080;
@@ -52,7 +54,7 @@ int BluetoothGetChar()
 	return 0;
 }
 
-int BluetoothReceivedData(void)
+int RS232::received_data(void)
 {
 	int data = *(volatile unsigned int *)0xFF200080;
 	return (data >> 16) & 0xFF;
@@ -61,10 +63,10 @@ int BluetoothReceivedData(void)
 //
 // Remove/flush the UART receiver buffer by removing any unread characters
 //
-void BluetoothFlush(void)
+void RS232::flush(void)
 {
-	while (BluetoothReceivedData()) {
-		BluetoothGetChar();
+	while (received_data()) {
+		flush();
 	};
 	return; // no more characters so return
 }
