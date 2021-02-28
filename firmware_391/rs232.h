@@ -5,13 +5,13 @@
 
 class RS232 {
     private:
-        unsigned int *address;
+        unsigned int address;
+        unsigned int control_address;
     public:
-        RS232() {};
-        RS232(unsigned int *address) {};
+        RS232(unsigned int address);
 
         int putchar(char c);
-        int getchar(void);
+        int getchar(unsigned char *c);
         int received_data();
         void flush();
 };
