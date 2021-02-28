@@ -1,0 +1,3 @@
+# protobuf generating scripts will fill this directory. Keep it blank otherwise
+*
+!.gitignore
