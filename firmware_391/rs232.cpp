@@ -16,11 +16,11 @@
  */
 
 RS232::RS232(unsigned int address) {
-	this->address = address;
-	this->control_address = address+4;
+	this->address = (volatile unsigned int *)address;
+	this->control_address = (volatile unsigned int *)address+4;
 
 	// enable read interrupts
-	*(volatile unsigned int *)control_address = 0x01;
+	*control_address = 0x01;
 }
 
 int RS232::putchar(char c)
@@ -31,7 +31,7 @@ int RS232::putchar(char c)
 	printf("Putting char %c\n", c);
 
 	/* write character to Transmitter fifo register */
-	*(volatile unsigned int *)address = c;
+	*address = c;
 
 	return c;
 }
@@ -39,11 +39,11 @@ int RS232::putchar(char c)
 int RS232::getchar(unsigned char *c)
 {
 
-	unsigned int data = *(volatile unsigned int *)address;
+	unsigned int data = *address;
 	unsigned int data_valid = data & 0x8000;
 	unsigned int chars_left = (data >> 16) & 0xFF;
 
-	unsigned int control = *(volatile unsigned int *)control_address;
+	unsigned int control = *control_address;
 
 	*c = data & 0xFF;
 	// byte 15 of data is the "RVALID" flag. Check this.

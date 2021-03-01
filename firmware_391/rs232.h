@@ -5,8 +5,8 @@
 
 class RS232 {
     private:
-        unsigned int address;
-        unsigned int control_address;
+        volatile unsigned int *address;
+        volatile unsigned int *control_address;
     public:
         RS232(unsigned int address);
 
