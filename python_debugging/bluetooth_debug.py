@@ -1,5 +1,7 @@
-from bluetooth import *
 from pprint import pprint
+import serial
+import time
+import serial.tools.list_ports as port_list
 import arm_comms_pb2 as pb2
 
 #https://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications/
@@ -52,35 +54,54 @@ def unframebytestring(bytestring):
 
     return newarr
 
-i = pb2.bt_interrupt()
-i.command = pb2.Mode.start_custom
-i.intended_duration = 120
-i.frequency = 5.34
+#i = pb2.bt_interrupt()
+#i.command = pb2.Mode.start_custom
+#i.intended_duration = 120
+#i.frequency = 5.34
 
-datagram = i.SerializeToString()
+#datagram = i.SerializeToString()
 
-datagramb = bytearray(datagram)
+#datagramb = bytearray(datagram)
 
-for d in datagramb:
-    print(f"{d:02x},", end=" ")
-print()
+#for d in datagramb:
+    #print(f"{d:02x},", end=" ")
+#print()
 
-framebytestring(datagramb)
+#framebytestring(datagramb)
 
-for d in datagramb:
-    print(f"{d:02x},", end=" ")
-print()
+#for d in datagramb:
+    #print(f"{d:02x},", end=" ")
+#print()
 
-datagramb = unframebytestring(datagramb)
+#datagramb = unframebytestring(datagramb)
 
-for d in datagramb:
-    print(f"{d:02x},", end=" ")
-print()
+#for d in datagramb:
+    #print(f"{d:02x},", end=" ")
+#print()
 # j = pb2.bt_interrupt()
 # j.ParseFromString(datagram)
 # print(j)
 
-# devices = discover_devices()
+bytestr = bytearray("Hello World!", 'ascii')
+framebytestring(bytestr)
+for b in bytestr:
+    print(f"{b:02x}", end=' ')
+print()
+
+
+s = serial.Serial('COM6')
+s.write(bytestr)
+#for b in bytestr:
+    #s.write(b)
+    #time.sleep(1)
+s.write(bytes([1,2,3,4]))
+
+
+sr = serial.Serial('COM5')
+d = sr.read_all()
+print(d)
+
+#devices = discover_devices()
 
 # # our HC-05 has mac address 20:18:11:20:28:19
-# print(devices)
+#print(devices)
