@@ -11,8 +11,8 @@ class RS232 {
         RS232(unsigned int address);
 
         int putchar(char c);
-        int getchar(unsigned char *c);
-        int received_data();
+        int getchar(char *c);
+        int read_fifo_size();
         void flush();
 };
 /*

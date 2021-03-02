@@ -7,7 +7,7 @@ Parser::Parser(RS232 *rs232) {
 }
 
 int Parser::getdata(char *& data) {
-    unsigned char c;
+    char c;
     int i = 0;
     int result;
     bool previous_escape = false;
@@ -20,41 +20,49 @@ int Parser::getdata(char *& data) {
     } while (c != STARTFLAG);
 
     while (i < BUFLEN) {
-        for (int j = 0; j < i; j++) {
-            printf("%c", buffer[j]);
-        }
-
         do {
         	result = rs232->getchar(&c);
         } while (result);
 
+        /* If the previous character was an escape character, this current
+         * character is part of the data. That means that we add it to our
+         * buffer regardless of whether or not it is a special character */
         if (previous_escape) {
             buffer[i] = c;
             i++;
             previous_escape = false;
         }
 
+        /* This character is an escape, but the previous character wasn't, so
+         * don't add this to the buffer and instead just mark that there was an
+         * escape. */
         else if (c == ESCAPE) {
             previous_escape = true;
         }
 
-        else if (c == ENDFLAG) {
-            break;
-        }
-
         /* STARTFLAG without previous_escape is bad news in a message. We are
-         * probbaly parsing this message incorrectly if a new message is coming
+         * probably parsing this message incorrectly if a new message is coming
          * in right now. We should start over. */
         else if (c == STARTFLAG) {
             i = 0;
             previous_escape = false;
         }
 
+        /* All the data we need is already in the buffer */
+        else if (c == ENDFLAG) {
+            break;
+        }
+
+        /* This is just a normal character, so we add it to the buffer. */
         else {
             buffer[i] = c;
             i++;
             previous_escape = false;
         }
+    }
+
+    if (i == 256) {
+        printf("Buffer overflow!\n");
     }
 
     for (int j = 0; j < i; j++) {
