@@ -82,8 +82,8 @@ def unframebytestring(bytestring):
 # j.ParseFromString(datagram)
 # print(j)
 
-bytestr = bytearray("Hello World!\n", 'ascii')
-#framebytestring(bytestr)
+bytestr = bytearray("Parsed Data\nLooks\nLike\nThis!\n\n", 'ascii')
+framebytestring(bytestr)
 for b in bytestr:
     print(f"{b:02x}", end=' ')
 print()
@@ -91,7 +91,9 @@ print()
 s = serial.Serial('COM6', 38400)
 
 while True:
-    s.write(bytestr)
+    s.write(bytestr[0:5])
+    time.sleep(1)
+    s.write(bytestr[5:])
     d = s.read_all()
     print(d)
-    time.sleep(1)
+    time.sleep(2)
