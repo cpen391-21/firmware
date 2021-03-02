@@ -1,28 +1,28 @@
 #include "parser.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 Parser::Parser(RS232 *rs232) {
     this->rs232 = rs232;
 }
 
-int Parser::getdata(char *& data) {
+int Parser::getdata(char **data) {
+	// We want to make sure that if there was data in our address, we free it
+	// To avoid introducing a memory leak
+	free(*data);
+
     char c;
     int i = 0;
-    int result;
     bool previous_escape = false;
 
     do {
-        result = rs232->getchar(&c);
-        if (!result) {
-            printf("New Char: %02x\n", c);
-        }
+        rs232->getchar(&c);
     } while (c != STARTFLAG);
 
     while (i < BUFLEN) {
-        do {
-        	result = rs232->getchar(&c);
-        } while (result);
+    	while(rs232->getchar(&c)) {};
 
         /* If the previous character was an escape character, this current
          * character is part of the data. That means that we add it to our
@@ -65,9 +65,15 @@ int Parser::getdata(char *& data) {
         printf("Buffer overflow!\n");
     }
 
-    for (int j = 0; j < i; j++) {
-        printf("%c", buffer[j]);
+    //for (int j = 0; j < i; j++) {
+    //    printf("%c", buffer[j]);
+    //}
+
+    *data = (char *)malloc(i*sizeof(char));
+    if (*data == NULL) {
+    	return 0;
     }
-    printf("\n");
+
+    memcpy(*data, buffer, i);
     return i;
 }

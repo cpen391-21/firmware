@@ -67,6 +67,21 @@ void test_bluetooth(void){
     }
 }
 
+void test_parser(void) {
+	int len;
+	char *data;
+	Parser parser(&bluetooth);
+
+	while (1) {
+		len = parser.getdata(&data);
+		if(len) {
+			for (int i = 0; i < len; i++) {
+				printf("%c", data[i]);
+			}
+		}
+	}
+}
+
 int main(void) {
-	test_bluetooth();
+	test_parser();
 }

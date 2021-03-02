@@ -17,7 +17,7 @@ class Parser {
 
         // Copies a datagram into data.
         // Returns the length of said datagram.
-        int getdata(char *& data);
+        int getdata(char **data);
 };
 
 #endif //PARSER_H
