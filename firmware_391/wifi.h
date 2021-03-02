@@ -6,19 +6,21 @@
 #define STATION_MODE    1 // client
 #define AP_MODE         2 // host
 #define DUAL_MODE       3 // both
+#define DEFAULT_MODE    DUAL_MODE
+
+#define DEFAULT_ADDRESS 0xdeadbeef
 
 enum net_protocol {TCP, UDP};
 
 class wifi {
     private:
-        RS232 uart;
-        enum net_protocol protocol;
-        unsigned int cwmode;
+        RS232 *uart;
+        enum net_protocol protocol = TCP;
+        unsigned int cw_mode = DEFAULT_MODE;
         int send_cmd(std::string cmd);
-        int set_cwmode(unsigned int cwmode);
+        int set_cw_mode(unsigned int cwmode);
     public:
-        wifi(unsigned int address);
-        wifi();
+        wifi(unsigned int address = DEFAULT_ADDRESS);
 
         /*
         * connect to a given wifi network
