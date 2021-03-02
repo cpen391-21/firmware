@@ -14,6 +14,9 @@ class Parser {
         char buffer[BUFLEN];
     public:
         Parser(RS232 *rs232);
+
+        // Copies a datagram into data.
+        // Returns the length of said datagram.
         int getdata(char *& data);
 };
 
