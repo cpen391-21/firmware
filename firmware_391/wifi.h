@@ -10,6 +10,14 @@
 
 #define DEFAULT_ADDRESS 0xdeadbeef
 
+#define WIFI_CONNECT    "CWJAP=\""
+#define TCP_CONNECT     "CIPSTART=\"TCP\",\""
+#define SEND            "CIPSEND="
+#define DISCONNECT      "CIPCLOSE"
+
+#define RESP_TIMEOUT        1.0
+#define RESP_TIMEOUT_MSG    "send_cmd() timed out without response"
+
 enum net_protocol {TCP, UDP};
 
 class wifi {
@@ -17,7 +25,11 @@ class wifi {
         RS232 *uart;
         enum net_protocol protocol = TCP;
         unsigned int cw_mode = DEFAULT_MODE;
-        int send_cmd(std::string cmd);
+
+        /*
+        * sends the given command and returns the response string
+        */
+        std::string send_cmd(std::string cmd);
         int set_cw_mode(unsigned int cwmode);
     public:
         wifi(unsigned int address = DEFAULT_ADDRESS);
@@ -50,4 +62,4 @@ class wifi {
 
         void set_protocol(enum net_protocol protocol);
         enum net_protocol get_protocol();
-}
+};
