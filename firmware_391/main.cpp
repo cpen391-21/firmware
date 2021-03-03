@@ -32,15 +32,13 @@ void test_audio(void) {
 	while(1) {
 		fifospace = audio.get_min_fifospace();
 
-		printf("Fifospace: %d, data %d\n", fifospace, data);
-
 		if (fifospace) {
 			audio.putmono(data);
 
-			if (count++ >= 3) {
+			if (count++ >= 31) {
 				count = 0;
 				if (data == 0) {
-					data = 0xFF;
+					data = 0xFFFF;
 				} else {
 					data = 0;
 				}
@@ -83,5 +81,5 @@ void test_parser(void) {
 }
 
 int main(void) {
-	test_parser();
+	test_audio();
 }
