@@ -2,9 +2,12 @@
 module CPEN391_Computer (
 	audio_config_SDAT,
 	audio_config_SCLK,
+	audio_core_ADCDAT,
+	audio_core_ADCLRCK,
 	audio_core_BCLK,
 	audio_core_DACDAT,
 	audio_core_DACLRCK,
+	audio_out_clk_clk,
 	hex0_1_export,
 	hex2_3_export,
 	hex4_5_export,
@@ -105,14 +108,16 @@ module CPEN391_Computer (
 	sdram_clk_clk,
 	slider_switches_export,
 	system_pll_ref_clk_clk,
-	system_pll_ref_reset_reset,
-	audio_out_clk_clk);	
+	system_pll_ref_reset_reset);	
 
 	inout		audio_config_SDAT;
 	output		audio_config_SCLK;
+	input		audio_core_ADCDAT;
+	input		audio_core_ADCLRCK;
 	input		audio_core_BCLK;
 	output		audio_core_DACDAT;
 	input		audio_core_DACLRCK;
+	output		audio_out_clk_clk;
 	output	[7:0]	hex0_1_export;
 	output	[7:0]	hex2_3_export;
 	output	[7:0]	hex4_5_export;
@@ -214,5 +219,4 @@ module CPEN391_Computer (
 	input	[9:0]	slider_switches_export;
 	input		system_pll_ref_clk_clk;
 	input		system_pll_ref_reset_reset;
-	output		audio_out_clk_clk;
 endmodule

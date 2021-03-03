@@ -1276,7 +1276,7 @@
    enabled="1">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="12288135" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
-  <parameter name="audio_in" value="false" />
+  <parameter name="audio_in" value="true" />
   <parameter name="audio_out" value="true" />
   <parameter name="avalon_bus_type" value="Memory Mapped" />
   <parameter name="dw" value="16" />

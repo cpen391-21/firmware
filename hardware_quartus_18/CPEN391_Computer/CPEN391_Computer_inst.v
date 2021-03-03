@@ -1,9 +1,12 @@
 	CPEN391_Computer u0 (
 		.audio_config_SDAT               (<connected-to-audio_config_SDAT>),               //         audio_config.SDAT
 		.audio_config_SCLK               (<connected-to-audio_config_SCLK>),               //                     .SCLK
-		.audio_core_BCLK                 (<connected-to-audio_core_BCLK>),                 //           audio_core.BCLK
+		.audio_core_ADCDAT               (<connected-to-audio_core_ADCDAT>),               //           audio_core.ADCDAT
+		.audio_core_ADCLRCK              (<connected-to-audio_core_ADCLRCK>),              //                     .ADCLRCK
+		.audio_core_BCLK                 (<connected-to-audio_core_BCLK>),                 //                     .BCLK
 		.audio_core_DACDAT               (<connected-to-audio_core_DACDAT>),               //                     .DACDAT
 		.audio_core_DACLRCK              (<connected-to-audio_core_DACLRCK>),              //                     .DACLRCK
+		.audio_out_clk_clk               (<connected-to-audio_out_clk_clk>),               //        audio_out_clk.clk
 		.hex0_1_export                   (<connected-to-hex0_1_export>),                   //               hex0_1.export
 		.hex2_3_export                   (<connected-to-hex2_3_export>),                   //               hex2_3.export
 		.hex4_5_export                   (<connected-to-hex4_5_export>),                   //               hex4_5.export
@@ -104,7 +107,6 @@
 		.sdram_clk_clk                   (<connected-to-sdram_clk_clk>),                   //            sdram_clk.clk
 		.slider_switches_export          (<connected-to-slider_switches_export>),          //      slider_switches.export
 		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
-		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>),      // system_pll_ref_reset.reset
-		.audio_out_clk_clk               (<connected-to-audio_out_clk_clk>)                //        audio_out_clk.clk
+		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>)       // system_pll_ref_reset.reset
 	);
 
