@@ -49,6 +49,18 @@ int wifi::connect(std::string SSID, std::string password){
     // TODO parse and evaluate error messages to return better error codes
 }
 
+double wifi::ping(std::string address){
+    std::string cmd = PING + address + "\"";
+    std::string resp = this->send_cmd(cmd);
+    std::size_t end = resp.find("\r");
+    std::size_t start = 6; // index of first part of ping in ms
+
+    if(resp.find("OK") != std::string::npos) {
+        return std::stod(resp.substr(start, end - start)) / 1000.0;
+    }
+    return 0.0;
+}
+
 void wifi::set_protocol(enum net_protocol protocol)
 {
     this->protocol = protocol;

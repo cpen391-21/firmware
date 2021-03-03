@@ -14,6 +14,7 @@
 #define TCP_CONNECT     "CIPSTART=\"TCP\",\""
 #define SEND            "CIPSEND="
 #define DISCONNECT      "CIPCLOSE"
+#define PING            "PING=\""
 
 #define RESP_TIMEOUT        1.0
 #define RESP_TIMEOUT_MSG    "send_cmd() timed out without response"
