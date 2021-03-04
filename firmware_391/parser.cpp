@@ -65,10 +65,6 @@ int Parser::getdata(char **data) {
         printf("Buffer overflow!\n");
     }
 
-    //for (int j = 0; j < i; j++) {
-    //    printf("%c", buffer[j]);
-    //}
-
     *data = (char *)malloc(i*sizeof(char));
     if (*data == NULL) {
     	return 0;

@@ -2,7 +2,6 @@ from pprint import pprint
 import serial
 import time
 import serial.tools.list_ports as port_list
-import arm_comms_pb2 as pb2
 
 #https://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications/
 def framebytestring(bytestring):
@@ -54,46 +53,67 @@ def unframebytestring(bytestring):
 
     return newarr
 
-#i = pb2.bt_interrupt()
-#i.command = pb2.Mode.start_custom
-#i.intended_duration = 120
-#i.frequency = 5.34
+def printbytearray(ba):
+    for b in ba:
+        print(f"{b:02x}", end=' ')
+    print()
 
-#datagram = i.SerializeToString()
+# Audio data must be 16 bits!
+def createDatagram(audio_data, address):
+    audio_data_bytes = audio_data.to_bytes(2, 'big')
+    address_bytes = address.to_bytes(3, 'big')
 
-#datagramb = bytearray(datagram)
+    bytestr = bytearray("d:", 'ascii')
+    bytestr.extend(audio_data_bytes)
+    bytestr.extend(address_bytes)
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
+    framebytestring(bytestr)
+    printbytearray(bytestr)
+    return bytestr
 
-#framebytestring(datagramb)
+def update_size(size):
+    bytestr = bytearray("s:", 'ascii')
+    bytestr.extend(size.to_bytes(3, 'big'))
+    framebytestring(bytestr)
+    return bytestr
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
+def start_audio():
+    bytestr = bytearray("start", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
 
-#datagramb = unframebytestring(datagramb)
+def stop_audio():
+    bytestr = bytearray("stop", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
-# j = pb2.bt_interrupt()
-# j.ParseFromString(datagram)
-# print(j)
+s = serial.Serial('COM6', 115200)
 
-bytestr = bytearray("Parsed Data\nLooks\nLike\nThis!\n\n", 'ascii')
-framebytestring(bytestr)
-for b in bytestr:
-    print(f"{b:02x}", end=' ')
-print()
 
-s = serial.Serial('COM6', 38400)
-
-while True:
-    s.write(bytestr[0:5])
-    time.sleep(1)
-    s.write(bytestr[5:])
-    d = s.read_all()
-    print(d)
+for i in range(1):
+    s.write(start_audio())
+    print(s.readline())
     time.sleep(2)
+    s.write(stop_audio())
+    print(s.readline())
+    time.sleep(2)
+
+time.sleep(1)
+
+for i in range(1024):
+    #aud = (i % 8) * 8191
+    if (i % 8) > 3:
+        aud = 0xFFFF
+    else:
+        aud = 0
+    s.write(createDatagram(aud, i))
+    print(s.readline())
+    print()
+    #time.sleep()
+
+time.sleep(0.1)
+s.write(update_size(1024))
+print(s.readline())
+time.sleep(0.1)
+s.write(start_audio())
+print(s.readline())

@@ -10,6 +10,8 @@ class RS232 {
     public:
         RS232(unsigned int address);
 
+        void sendmsg(char *c);
+
         int putchar(char c);
         int getchar(char *c);
         int read_fifo_size();
