@@ -33,11 +33,9 @@ AlteraDebugProgs
 *.cmp
 *.done
 *.eqn
-*.hex
 *.html
 *.jdi
 *.jpg
-*.mif
 *.pin
 *.pof
 *.ptf.*
@@ -49,7 +47,6 @@ AlteraDebugProgs
 *.sof
 *.sopc_builder
 *.summary
-*.tcl
 *.txt # Explicitly add any text files used
 *~
 *example*

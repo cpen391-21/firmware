@@ -132,7 +132,15 @@ module MyComputer_Verilog (
 		inout unsigned [7:0] HPS_USB_DATA,
 		input HPS_USB_DIR,
 		input HPS_USB_NXT,
-		output HPS_USB_STP 
+		output HPS_USB_STP,
+
+		// Audio CODEC
+		input  AUD_BCLK,
+		output AUD_DACDAT,
+		input  AUD_DACLRCK,
+		output I2C_SCLK,
+		inout  I2C_SDAT,
+		output AUD_XCK
 	 );
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -287,10 +295,18 @@ module MyComputer_Verilog (
 			.system_pll_ref_clk_clk          (CLOCK_50),          				//   system_pll_ref_clk.clk
 			.system_pll_ref_reset_reset      (0),       								// system_pll_ref_reset.reset
 			
-			.rs232_RXD                       (GPIO_1[18]),                       //                rs232.RXD
-			.rs232_TXD                       (GPIO_1[19])         
+			.rs232_RXD                       (GPIO_1[18]),                     //                rs232.RXD
+			.rs232_TXD                       (GPIO_1[19]),         
+    	    .audio_core_BCLK                 (AUD_BCLK),                 //           audio_core.BCLK
+		    .audio_core_DACDAT               (AUD_DACDAT),               //                     .DACDAT
+		    .audio_core_DACLRCK              (AUD_DACLRCK),              //                     .DACLRCK
+		    .audio_config_SDAT               (I2C_SDAT),               //         audio_config.SDAT
+		    .audio_config_SCLK               (I2C_SCLK),                //                     .SCLK
+			 .audio_out_clk_clk           (AUD_XCK)                //        audio_out_clk.clk
+
 		);
 		
+		// 18, 19 RXTX trying 
  
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 	  // Instantiate 3 instances of the seven seg decoders
@@ -328,33 +344,6 @@ module MyComputer_Verilog (
 			.Display1(HEX5)		// output of the component connect to HEX displays 4 and 5 on the DE1
 		);	
 
-	  ///////////////////////////////////////////////////////////////////////////////////////////////
-	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
-	  ///////////////////////////////////////////////////////////////////////////////////////////////
-			
-		Graphics_and_Video_Controller		GraphicsController1 ( 
-				.Reset_L							(RESET_L_WIRE),
-				.Clock_50Mhz 					(CLOCK_50),
-				.Address 						(IO_Address_WIRE),
-				.DataIn 							(IO_Write_Data_WIRE),
-				.DataOut 						(IO_Read_Data_WIRE),
-				.IOEnable_L 					(IO_Enable_L_WIRE),
-				.UpperByteSelect_L 			(IO_UpperByte_Select_L_WIRE),
-				.LowerByteSelect_L 			(IO_LowerByte_Select_L_WIRE),
-				.WriteEnable_L 				(IO_RW_WIRE),
-				.GraphicsCS_L 					(IO_Enable_L_WIRE),
-				
-				.VGA_Clock						(VGA_CLK),
-				.VGA_Blue 						(VGA_B),
-				.VGA_Green 						(VGA_G),
-				.VGA_Red							(VGA_R),
-				.VGA_HSync 						(VGA_HS),
-				.VGA_VSync						(VGA_VS),
-				.VGA_Blanking 					(VGA_BLANK_N),
-				.VGA_SYNC						(VGA_SYNC_N)
-		 );
-		
-		
 		// Map 16 bit memory upper and lower data byte strobes to individual wires
 		
 		assign DRAM_UDQM = Temp_SDRAM_DQM[1];

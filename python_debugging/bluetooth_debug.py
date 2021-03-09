@@ -82,26 +82,18 @@ def unframebytestring(bytestring):
 # j.ParseFromString(datagram)
 # print(j)
 
-bytestr = bytearray("Hello World!", 'ascii')
+bytestr = bytearray("Parsed Data\nLooks\nLike\nThis!\n\n", 'ascii')
 framebytestring(bytestr)
 for b in bytestr:
     print(f"{b:02x}", end=' ')
 print()
 
+s = serial.Serial('COM6', 38400)
 
-s = serial.Serial('COM6')
-s.write(bytestr)
-#for b in bytestr:
-    #s.write(b)
-    #time.sleep(1)
-s.write(bytes([1,2,3,4]))
-
-
-sr = serial.Serial('COM5')
-d = sr.read_all()
-print(d)
-
-#devices = discover_devices()
-
-# # our HC-05 has mac address 20:18:11:20:28:19
-#print(devices)
+while True:
+    s.write(bytestr[0:5])
+    time.sleep(1)
+    s.write(bytestr[5:])
+    d = s.read_all()
+    print(d)
+    time.sleep(2)
