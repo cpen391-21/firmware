@@ -5,22 +5,24 @@
 #include "rs232.h"
 #include "wifi.h"
 
-wifi::wifi(unsigned int address = DEFAULT_ADDRESS)
+wifi::wifi(unsigned int address)
 {
+    this->protocol = TCP;
+    this->cw_mode = DEFAULT_MODE;
     this->uart = new RS232(address);
 }
 
 std::string wifi::send_cmd(std::string cmd){
     time_t start, curr_time;
-    std::vector<char> resp_vec; // use char vector to receive response dynamically
-    char resp_char;
+    std::vector<unsigned char> resp_vec; // use char vector to receive response dynamically
+    unsigned char resp_char;
 
     uart->putchar('A'); // all AT commands start with "AT+"
     uart->putchar('T');
     uart->putchar('+');
 
-    for (char c: cmd){
-        uart->putchar(c);
+    for (int i = 0; i < cmd.size(); i++){
+        uart->putchar(cmd[i]);
     }
     uart->putchar('\r'); // return ends AT command
 
@@ -41,11 +43,13 @@ std::string wifi::send_cmd(std::string cmd){
     return resp;
 }
 
-int wifi::connect(std::string SSID, std::string password){
-    std::string cmd = WIFI_CONNECT + SSID + "\",\"" + password + "\"";
+int connect(char* ssid, char* password){
+    /*
+    std::string cmd = WIFI_CONNECT + ssid + "\",\"" + password + "\"";
     std::string resp = this->send_cmd(cmd);
-
     return resp.compare(0, 2, "OK"); // check that the ESP sent back "OK"
+    */
+   return 0;
     // TODO parse and evaluate error messages to return better error codes
 }
 
@@ -56,7 +60,7 @@ double wifi::ping(std::string address){
     std::size_t start = 6; // index of first part of ping in ms
 
     if(resp.find("OK") != std::string::npos) {
-        return std::stod(resp.substr(start, end - start)) / 1000.0;
+        return std::atof(resp.substr(start, end - start).c_str()) / 1000.0;
     }
     return 0.0;
 }

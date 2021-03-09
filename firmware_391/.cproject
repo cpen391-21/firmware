@@ -29,7 +29,7 @@
 								<inputType id="com.arm.tool.assembler.input.1984050330" superClass="com.arm.tool.assembler.input"/>
 							</tool>
 							<tool id="com.arm.tool.c.linker.596735827" name="Arm Linker 5" superClass="com.arm.tool.c.linker">
-								<option id="com.arm.tool.c.linker.option.scatter.1109258874" name="Scatter file (--scatter)" superClass="com.arm.tool.c.linker.option.scatter" useByScannerDiscovery="false" value="C:\Users\Tyler\Documents\DS-5 Workspace\CPEN391_tutorial\CPEN391ForDE1.scat" valueType="string"/>
+								<option id="com.arm.tool.c.linker.option.scatter.1109258874" name="Scatter file (--scatter)" superClass="com.arm.tool.c.linker.option.scatter" useByScannerDiscovery="false" value="C:\Users\Jackson\Documents\School\CPEN391\firmware\firmware_391\CPEN391ForDE1.scat" valueType="string"/>
 								<option id="com.arm.tool.c.linker.option.target.enableToolSpecificSettings.2084658153" name="Enable tool specific settings" superClass="com.arm.tool.c.linker.option.target.enableToolSpecificSettings" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 							</tool>
 							<tool id="com.arm.tool.librarian.1999720610" name="Arm Librarian 5" superClass="com.arm.tool.librarian"/>

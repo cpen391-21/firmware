@@ -8,7 +8,7 @@
 #define DUAL_MODE       3 // both
 #define DEFAULT_MODE    DUAL_MODE
 
-#define DEFAULT_ADDRESS 0xdeadbeef
+#define DEFAULT_ADDRESS 0xFF200088
 
 #define WIFI_CONNECT    "CWJAP=\""
 #define TCP_CONNECT     "CIPSTART=\"TCP\",\""
@@ -24,8 +24,8 @@ enum net_protocol {TCP, UDP};
 class wifi {
     private:
         RS232 *uart;
-        enum net_protocol protocol = TCP;
-        unsigned int cw_mode = DEFAULT_MODE;
+        enum net_protocol protocol;
+        unsigned int cw_mode;
 
         /*
         * sends the given command and returns the response string
@@ -38,7 +38,7 @@ class wifi {
         /*
         * connect to a given wifi network
         */
-        int connect(std::string SSID, std::string password);
+        int connect(char* ssid, char* password);
 
         /*
         * returns True if a packet is waiting in the buffer and False otherwise
