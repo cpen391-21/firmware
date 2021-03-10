@@ -16,7 +16,7 @@
 #define DISCONNECT      "CIPCLOSE"
 #define PING            "PING=\""
 
-#define RESP_TIMEOUT        1.0
+#define RESP_TIMEOUT        2.0
 #define RESP_TIMEOUT_MSG    "send_cmd() timed out without response"
 
 enum net_protocol {TCP, UDP};

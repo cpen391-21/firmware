@@ -15,6 +15,7 @@
 #include "parser.h"
 #include "wifi.h"
 #include "ssid.h"
+#include "audio.h"
 
 RS232 bluetooth(0xFF200080);
 AudioCore audio(0xFF200090);
@@ -70,29 +71,32 @@ void test_bluetooth(void){
 
 void test_wifi(void){
     RS232 wifi_uart(0xFF200088);
+    bool timeout = false;
 
+    char connect_cmd1[] = {'A', 'T', '+', 'C', 'W', '\0'};
     char connect_cmd[] = "AT+CWJAP=\"WiBelieveICanFi\",\"7h224x@7!s\"\r";
     char ping_cmd[] = "AT+PING=\"https://www.google.com/\"\r";
 
     time_t start, curr_time;
-    unsigned char resp_char;
+    char resp_char;
     unsigned int i;
 
-    unsigned char resp [256];
+    char resp [256];
 
     for(i = 0; connect_cmd[i] != '\0'; i++){
         wifi_uart.putchar(connect_cmd[i]);
     }
 
     time(&start);
-    while (!wifi_uart.received_data()){ // wait for esp to respond
+    while (!wifi_uart.read_fifo_size()){ // wait for esp to respond
         time(&curr_time);
         if(difftime(curr_time, start) > RESP_TIMEOUT) {
+            timeout = true;
             break;
         }
     }
 
-    for(i = 0; wifi_uart.received_data() && i < 256; i++){
+    for(i = 0; wifi_uart.read_fifo_size() && i < 256; i++){
         wifi_uart.getchar(&resp_char);
         resp[i] = resp_char;
     }
@@ -104,17 +108,19 @@ void test_wifi(void){
     }
 
     time(&start);
-    while (!wifi_uart.received_data()){ // wait for esp to respond
+    while (!wifi_uart.read_fifo_size()){ // wait for esp to respond
         time(&curr_time);
         if(difftime(curr_time, start) > RESP_TIMEOUT) {
             break;
         }
     }
 
-    for(i = 0; wifi_uart.received_data() && i < 256; i++){
+    for(i = 0; wifi_uart.read_fifo_size() && i < 256; i++){
         wifi_uart.getchar(&resp_char);
         resp[i] = resp_char;
     }
+
+    printf(resp);
 }
 
 void test_parser(void) {
@@ -134,4 +140,5 @@ void test_parser(void) {
 
 int main(void) {
 	test_wifi();
+	while (1);
 }

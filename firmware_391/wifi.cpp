@@ -4,6 +4,7 @@
 #include <time.h> 
 #include "rs232.h"
 #include "wifi.h"
+#include "audio.h"
 
 wifi::wifi(unsigned int address)
 {
@@ -14,8 +15,8 @@ wifi::wifi(unsigned int address)
 
 std::string wifi::send_cmd(std::string cmd){
     time_t start, curr_time;
-    std::vector<unsigned char> resp_vec; // use char vector to receive response dynamically
-    unsigned char resp_char;
+    std::vector<char> resp_vec; // use char vector to receive response dynamically
+    char resp_char;
 
     uart->putchar('A'); // all AT commands start with "AT+"
     uart->putchar('T');
@@ -27,14 +28,14 @@ std::string wifi::send_cmd(std::string cmd){
     uart->putchar('\r'); // return ends AT command
 
     time(&start);
-    while (!uart->received_data()){ // wait for esp to respond
+    while (!uart->read_fifo_size()){ // wait for esp to respond
         time(&curr_time);
         if (difftime(curr_time, start) > RESP_TIMEOUT) {
             return RESP_TIMEOUT_MSG;
         }
     }
 
-    while (uart->received_data()){
+    while (uart->read_fifo_size()){
         uart->getchar(&resp_char);
         resp_vec.push_back(resp_char);
     }
