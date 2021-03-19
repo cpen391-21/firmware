@@ -6,7 +6,9 @@
 module CPEN391_Computer (
 		inout  wire        audio_config_SDAT,               //         audio_config.SDAT
 		output wire        audio_config_SCLK,               //                     .SCLK
-		input  wire        audio_core_BCLK,                 //           audio_core.BCLK
+		input  wire        audio_core_ADCDAT,               //           audio_core.ADCDAT
+		input  wire        audio_core_ADCLRCK,              //                     .ADCLRCK
+		input  wire        audio_core_BCLK,                 //                     .BCLK
 		output wire        audio_core_DACDAT,               //                     .DACDAT
 		input  wire        audio_core_DACLRCK,              //                     .DACLRCK
 		output wire        audio_out_clk_clk,               //        audio_out_clk.clk
@@ -795,7 +797,9 @@ module CPEN391_Computer (
 		.writedata   (mm_interconnect_0_audio_0_avalon_audio_slave_writedata),  //                   .writedata
 		.readdata    (mm_interconnect_0_audio_0_avalon_audio_slave_readdata),   //                   .readdata
 		.irq         (irq_mapper_receiver2_irq),                                //          interrupt.irq
-		.AUD_BCLK    (audio_core_BCLK),                                         // external_interface.export
+		.AUD_ADCDAT  (audio_core_ADCDAT),                                       // external_interface.export
+		.AUD_ADCLRCK (audio_core_ADCLRCK),                                      //                   .export
+		.AUD_BCLK    (audio_core_BCLK),                                         //                   .export
 		.AUD_DACDAT  (audio_core_DACDAT),                                       //                   .export
 		.AUD_DACLRCK (audio_core_DACLRCK)                                       //                   .export
 	);

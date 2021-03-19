@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2021.03.02.11:09:00 -->
+ <!-- 2021.03.03.18:17:16 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1614708539</value>
+  <value>1614820635</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -86221,7 +86221,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1614708539</value>
+   <value>1614820635</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -86241,7 +86241,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1614708539</value>
+   <value>1614820635</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -86257,7 +86257,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1614708539</value>
+   <value>1614820635</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -87283,7 +87283,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="audio_in">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -87933,6 +87933,18 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <type>conduit</type>
    <isStart>false</isStart>
+   <port>
+    <name>AUD_ADCDAT</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>export</role>
+   </port>
+   <port>
+    <name>AUD_ADCLRCK</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>export</role>
+   </port>
    <port>
     <name>AUD_BCLK</name>
     <direction>Input</direction>
@@ -89656,7 +89668,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="baud">
    <type>int</type>
-   <value>38400</value>
+   <value>115200</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

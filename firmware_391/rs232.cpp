@@ -35,6 +35,13 @@ int RS232::putchar(char c)
 	return c;
 }
 
+void RS232::sendmsg(char *c) {
+	while (*c != '\0') {
+		putchar(*c);
+		c++;
+	}
+}
+
 int RS232::getchar(char *c)
 {
 	unsigned int data = *address;

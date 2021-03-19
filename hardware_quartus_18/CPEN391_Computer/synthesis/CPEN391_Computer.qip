@@ -2,7 +2,7 @@ set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -na
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_TOOL_VERSION "18.1"
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "CPEN391_Computer" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../CPEN391_Computer.sopcinfo"]
-set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name SLD_INFO "QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1614708539"
+set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name SLD_INFO "QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1614820635"
 set_global_assignment -library "CPEN391_Computer" -name MISC_FILE [file join $::quartus(qip_path) "../CPEN391_Computer.cmp"]
 set_global_assignment -library "CPEN391_Computer" -name SLD_FILE [file join $::quartus(qip_path) "CPEN391_Computer.regmap"]
 set_global_assignment -library "CPEN391_Computer" -name MISC_FILE [file join $::quartus(qip_path) "../../C"]
@@ -18,7 +18,7 @@ set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -na
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTYxNDcwODUzOQ==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTYxNDgyMDYzNQ==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBW::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::NUNTRU1BNUYzMUM2::QXV0byBERVZJQ0U="
 set_global_assignment -entity "CPEN391_Computer" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::Ng==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
@@ -1272,7 +1272,7 @@ set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Compu
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_VERSION "MTcuMQ=="
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_DESCRIPTION "UlMyMzIgVUFSVCBDb250cm9sbGVy"
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YXZhbG9uX2J1c190eXBl::TWVtb3J5IE1hcHBlZA==::QXZhbG9uIFR5cGU="
-set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YmF1ZA==::Mzg0MDA=::QmF1ZCBSYXRlIChicHMp"
+set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YmF1ZA==::MTE1MjAw::QmF1ZCBSYXRlIChicHMp"
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "cGFyaXR5::Tm9uZQ==::UGFyaXR5"
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "ZGF0YV9iaXRz::OA==::RGF0YSBCaXRz"
 set_global_assignment -entity "CPEN391_Computer_rs232_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "c3RvcF9iaXRz::MQ==::U3RvcCBCaXRz"
@@ -1647,7 +1647,7 @@ set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Compu
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_VERSION "MTguMA=="
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_DESCRIPTION "QXVkaW8gQ29udHJvbGxlciBmb3IgREUtc2VyaWVzIEJvYXJkcw=="
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YXZhbG9uX2J1c190eXBl::TWVtb3J5IE1hcHBlZA==::QXZhbG9uIFR5cGU="
-set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YXVkaW9faW4=::ZmFsc2U=::QXVkaW8gSW4="
+set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YXVkaW9faW4=::dHJ1ZQ==::QXVkaW8gSW4="
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "YXVkaW9fb3V0::dHJ1ZQ==::QXVkaW8gT3V0"
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "ZHc=::MTY=::RGF0YSBXaWR0aDo="
 set_global_assignment -entity "CPEN391_Computer_audio_0" -library "CPEN391_Computer" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBW::QXV0byBERVZJQ0VfRkFNSUxZ"

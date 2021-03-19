@@ -2,7 +2,7 @@ from pprint import pprint
 import serial
 import time
 import serial.tools.list_ports as port_list
-import arm_comms_pb2 as pb2
+import math
 
 #https://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications/
 def framebytestring(bytestring):
@@ -54,46 +54,70 @@ def unframebytestring(bytestring):
 
     return newarr
 
-#i = pb2.bt_interrupt()
-#i.command = pb2.Mode.start_custom
-#i.intended_duration = 120
-#i.frequency = 5.34
+def printbytearray(ba):
+    for b in ba:
+        print(f"{b:02x}", end=' ')
+    print()
 
-#datagram = i.SerializeToString()
+# Audio data must be 16 bits!
+def createDatagram(audio_data, address):
+    audio_data_bytes = audio_data.to_bytes(2, 'big', signed=True)
+    address_bytes = address.to_bytes(3, 'big')
 
-#datagramb = bytearray(datagram)
+    bytestr = bytearray("d:", 'ascii')
+    bytestr.extend(audio_data_bytes)
+    bytestr.extend(address_bytes)
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
+    framebytestring(bytestr)
+    #printbytearray(bytestr)
+    return bytestr
 
-#framebytestring(datagramb)
+def update_size(size):
+    bytestr = bytearray("s:", 'ascii')
+    bytestr.extend(size.to_bytes(3, 'big'))
+    framebytestring(bytestr)
+    return bytestr
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
+def start_audio():
+    bytestr = bytearray("start", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
 
-#datagramb = unframebytestring(datagramb)
+def stop_audio():
+    bytestr = bytearray("stop", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
 
-#for d in datagramb:
-    #print(f"{d:02x},", end=" ")
-#print()
-# j = pb2.bt_interrupt()
-# j.ParseFromString(datagram)
-# print(j)
+s = serial.Serial('COM6', 115200)
+print("Serial connected")
 
-bytestr = bytearray("Parsed Data\nLooks\nLike\nThis!\n\n", 'ascii')
-framebytestring(bytestr)
-for b in bytestr:
-    print(f"{b:02x}", end=' ')
-print()
+command_retry_amount = 10
+retry_amount = 1
 
-s = serial.Serial('COM6', 38400)
+for i in range(command_retry_amount):
+    s.write(stop_audio())
+
+print("Begin transmitting data")
+time.sleep(3)
+
+for i in range(1024):
+    aud = int(math.sin(2*math.pi*i/512)*65535/2)
+    for j in range(retry_amount):
+        s.write(createDatagram(aud, i))
+        time.sleep(0.02)
+    print(s.read_all().decode("utf-8"))
+
+print("Done transmitting data")
+time.sleep(1)
+for i in range(command_retry_amount):
+    s.write(update_size(1024))
+print(s.read_all())
+time.sleep(0.1)
+
+for i in range(command_retry_amount):
+    s.write(start_audio())
 
 while True:
-    s.write(bytestr[0:5])
     time.sleep(1)
-    s.write(bytestr[5:])
-    d = s.read_all()
-    print(d)
-    time.sleep(2)
+    print(s.read_all())
+

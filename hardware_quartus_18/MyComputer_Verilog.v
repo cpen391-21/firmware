@@ -9,7 +9,7 @@ module MyComputer_Verilog (
 		/////////////////////////////////////////////
 	
 		// Clock pins
-		input CLOCK_50,CLOCK2_50,CLOCK3_50,CLOCK4_50	, 
+		input CLOCK_50,CLOCK2_50,CLOCK3_50,CLOCK4_50,TD_CLK27,
 		
 		// Seven Segment Displays
 		// These are the names of the 6 seven segment display on the DE1 and those in the PIN Planner,
@@ -138,8 +138,8 @@ module MyComputer_Verilog (
 		input  AUD_BCLK,
 		output AUD_DACDAT,
 		input  AUD_DACLRCK,
-		output I2C_SCLK,
-		inout  I2C_SDAT,
+		output FPGA_I2C_SCLK,
+		inout  FPGA_I2C_SDAT,
 		output AUD_XCK
 	 );
 
@@ -300,12 +300,13 @@ module MyComputer_Verilog (
     	    .audio_core_BCLK                 (AUD_BCLK),                 //           audio_core.BCLK
 		    .audio_core_DACDAT               (AUD_DACDAT),               //                     .DACDAT
 		    .audio_core_DACLRCK              (AUD_DACLRCK),              //                     .DACLRCK
-		    .audio_config_SDAT               (I2C_SDAT),               //         audio_config.SDAT
-		    .audio_config_SCLK               (I2C_SCLK),                //                     .SCLK
-			 .audio_out_clk_clk           (AUD_XCK)                //        audio_out_clk.clk
+		    .audio_config_SDAT               (FPGA_I2C_SDAT),               //         audio_config.SDAT
+		    .audio_config_SCLK               (FPGA_I2C_SCLK),               //                     .SCLK
+			.audio_out_clk_clk               (AUD_XCK)                //        audio_out_clk.clk
 
 		);
-		
+	
+		//assign AUD_XCK = TD_CLK27;
 		// 18, 19 RXTX trying 
  
 	  ///////////////////////////////////////////////////////////////////////////////////////////////

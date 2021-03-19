@@ -53,9 +53,9 @@ module CPEN391_Computer_rs232_0 (
  *                           Parameter Declarations                          *
  *****************************************************************************/
 
-parameter CW							= 11;		// Baud counter width
-parameter BAUD_TICK_COUNT			= 1302;
-parameter HALF_BAUD_TICK_COUNT	= 651;
+parameter CW							= 9;		// Baud counter width
+parameter BAUD_TICK_COUNT			= 434;
+parameter HALF_BAUD_TICK_COUNT	= 217;
 
 parameter TDW							= 10;		// Total data width
 parameter DW							= 8;		// Data width

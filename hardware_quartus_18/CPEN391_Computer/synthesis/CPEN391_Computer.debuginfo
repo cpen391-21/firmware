@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="CPEN391_Computer" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2021.03.02.11:10:40 -->
+ <!-- 2021.03.03.18:19:11 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1614708539</value>
+  <value>1614820635</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -53844,7 +53844,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1614708539</value>
+   <value>1614820635</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -53864,7 +53864,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1614708539</value>
+   <value>1614820635</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -53880,7 +53880,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1614708539</value>
+   <value>1614820635</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -54936,7 +54936,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="audio_in">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -55586,6 +55586,18 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <type>conduit</type>
    <isStart>false</isStart>
+   <port>
+    <name>AUD_ADCDAT</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>export</role>
+   </port>
+   <port>
+    <name>AUD_ADCLRCK</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>export</role>
+   </port>
    <port>
     <name>AUD_BCLK</name>
     <direction>Input</direction>
@@ -57321,7 +57333,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="baud">
    <type>int</type>
-   <value>38400</value>
+   <value>115200</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -74068,5 +74080,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>B8F6B119080100000177F4214CDA</uniqueIdentifier>
+ <uniqueIdentifier>B8F6B119080100000177FACFBEA9</uniqueIdentifier>
 </EnsembleReport>
