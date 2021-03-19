@@ -73,7 +73,6 @@ void test_wifi(void){
     RS232 wifi_uart(0xFF200088);
     bool timeout = false;
 
-    char connect_cmd1[] = {'A', 'T', '+', 'C', 'W', '\0'};
     char connect_cmd[] = "AT+CWJAP=\"WiBelieveICanFi\",\"7h224x@7!s\"\r";
     char ping_cmd[] = "AT+PING=\"https://www.google.com/\"\r";
 
