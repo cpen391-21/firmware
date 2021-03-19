@@ -3,9 +3,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TIMEOUT 1024
 
 Parser::Parser(RS232 *rs232) {
     this->rs232 = rs232;
+}
+
+int Parser::startflag() {
+	char c;
+	rs232->getchar(&c);
+
+	if (c == STARTFLAG) {
+		return 1;
+	}
+	return 0;
 }
 
 int Parser::getdata(char **data) {
@@ -17,10 +28,17 @@ int Parser::getdata(char **data) {
     int i = 0;
     bool previous_escape = false;
 
+    /*
     do {
         rs232->getchar(&c);
-    } while (c != STARTFLAG);
+        i++;
+    } while (c != STARTFLAG && i < TIMEOUT);
 
+    if (i == TIMEOUT) {
+    	return 0;
+    }*/
+
+    i = 0;
     while (i < BUFLEN) {
     	while(rs232->getchar(&c)) {};
 

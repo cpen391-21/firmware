@@ -14,6 +14,11 @@
 #include "rs232.h"
 #include "parser.h"
 
+#include <math.h>
+
+/* Half of 16 bits */
+#define amplitude 0x7FFD;
+
 /* Big enough for 1 second of audio */
 #define AUDIO_DATA_MAX_SIZE 48000
 
@@ -22,12 +27,11 @@ AudioCore audio(0xFF200090);
 
 char outbuffer[256];
 
-short audio_data[AUDIO_DATA_MAX_SIZE];
-unsigned int audio_data_size;
-unsigned int audio_data_position;
-bool enable_audio = true;
+short        audio_data[AUDIO_DATA_MAX_SIZE];
+unsigned int audio_data_size = 1;
+unsigned int audio_data_position = 0;
 
-void test_audio(void) {
+void test_audio_square(void) {
 	// we need to send 16 bit data to the device
 	short data = 0;
 	int count = 0;
@@ -55,6 +59,38 @@ void test_audio(void) {
 		}
 	}
 }
+
+void setup_audio_sine() {
+	int size = 4096;
+	double result;
+	short data = 0;
+
+	for (int i = 0; i < size; i++) {
+		result = sin(2 * 3.14159 * i/256) + (sin(2 * 3.14159 * i/128) / 8);
+		result *= amplitude;
+		data   = (short)result;
+		audio_data[i] = data;
+	}
+
+	audio_data_size = size;
+}
+
+void test_audio_sine() {
+	int i = 0;
+	short data;
+
+	while (1) {
+		if (audio.get_min_fifospace()) {
+				data = audio_data[i++];
+				audio.putmono(data);
+
+				if (i == audio_data_size) {
+					i = 0;
+				}
+		}
+	}
+}
+
 
 void test_bluetooth(void){
     char str [] = "From the ARM A9! Over Bluetooth!";
@@ -105,8 +141,11 @@ void send_mono_audio() {
 	}
 
     while (audio.get_min_fifospace()) {
-        audio.putmono(audio_data[audio_data_position]);
-        audio_data_position = (audio_data_position + 1) % audio_data_size;
+        audio.putmono(audio_data[audio_data_position++]);
+
+        if (audio_data_position == audio_data_size) {
+        	audio_data_position = 0;
+        }
     }
 }
 
@@ -118,7 +157,7 @@ void update_audio_data(char *datastring) {
                            (*(datastring+5) << 8 ) +
                            (*(datastring+6)      );
 
-	sprintf(outbuffer, "Data: %2d, Address, %d (%02x, %02x, %02x)\n",
+	sprintf(outbuffer, "Data: %06d, Address %d (%02x, %02x, %02x)\n",
 			data, address,
 			*(datastring+4),
 			*(datastring+5),
@@ -127,7 +166,7 @@ void update_audio_data(char *datastring) {
 	bluetooth.sendmsg(outbuffer);
 
 	if (address > AUDIO_DATA_MAX_SIZE) {
-		printf("Address out of bounds!\n");
+		bluetooth.sendmsg("Address out of bounds!\n");
 		return;
 	}
 
@@ -164,6 +203,8 @@ void mono_bt_player(void) {
     char *size_keyword  = "s:\0";
 	int uart_fifo;
 
+	bool enable_audio = false;
+
 	Parser parser(&bluetooth);
 
 	while (1) {
@@ -174,7 +215,11 @@ void mono_bt_player(void) {
 
         // parser will not return until a message is delivered.
         // It's important to check if there is a message or it will interrupt our data.
-		len = parser.getdata(&data);
+		if (parser.startflag()) {
+			len = parser.getdata(&data);
+		} else {
+			len = 0;
+		}
 
 		if(len) {
 			if(!compare_string_start(data, data_keyword)) {
@@ -190,12 +235,14 @@ void mono_bt_player(void) {
             }
 		}
 
-        if (enable_audio) {
+        if (enable_audio && false) {
             send_mono_audio();
         }
 	}
 }
 
 int main(void) {
-	mono_bt_player();
+	//mono_bt_player();
+	setup_audio_sine();
+	test_audio_sine();
 }

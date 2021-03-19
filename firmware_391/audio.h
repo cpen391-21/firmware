@@ -16,6 +16,8 @@ class AudioCore {
         // It is up to the user to put 16, 20, or 24
         // bit data to match the qsys configuration.
         void putmono(int data);
+        void putleft(int data);
+        void putright(int data);
 
         unsigned int get_min_fifospace();
         unsigned int get_l_fifospace();

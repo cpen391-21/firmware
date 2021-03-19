@@ -30,6 +30,14 @@ void AudioCore::putmono(int data) {
 	*rdata_address = data;
 }
 
+void AudioCore::putleft(int data) {
+	*ldata_address = data;
+}
+
+void AudioCore::putright(int data) {
+	*rdata_address = data;
+}
+
 void AudioCore::clear_fifo(void) {
 	// We must set bits 2 and 3, then reset them.
 	// 0b0000_1100 is hex 0x
