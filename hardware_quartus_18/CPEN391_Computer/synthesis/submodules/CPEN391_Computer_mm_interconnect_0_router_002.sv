@@ -143,7 +143,7 @@ module CPEN391_Computer_mm_interconnect_0_router_002
     localparam PAD6 = log2ceil(64'hff200050 - 64'hff200040); 
     localparam PAD7 = log2ceil(64'hff200060 - 64'hff200050); 
     localparam PAD8 = log2ceil(64'hff200088 - 64'hff200080); 
-    localparam PAD9 = log2ceil(64'hff2000a0 - 64'hff200090); 
+    localparam PAD9 = log2ceil(64'hff200098 - 64'hff200090); 
     localparam PAD10 = log2ceil(64'hff2000b0 - 64'hff2000a0); 
     localparam PAD11 = log2ceil(64'hff202020 - 64'hff202000); 
     localparam PAD12 = log2ceil(64'hff202028 - 64'hff202020); 
@@ -187,6 +187,8 @@ module CPEN391_Computer_mm_interconnect_0_router_002
     // -------------------------------------------------------
     // Write and read transaction signals
     // -------------------------------------------------------
+    wire write_transaction;
+    assign write_transaction = sink_data[PKT_TRANS_WRITE];
     wire read_transaction;
     assign read_transaction  = sink_data[PKT_TRANS_READ];
 
@@ -259,19 +261,19 @@ module CPEN391_Computer_mm_interconnect_0_router_002
     // ( 0xff200080 .. 0xff200088 )
     if ( {address[RG:PAD8],{PAD8{1'b0}}} == 32'hff200080   ) begin
             src_channel = 18'b0000000000010000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 17;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 16;
     end
 
-    // ( 0xff200090 .. 0xff2000a0 )
-    if ( {address[RG:PAD9],{PAD9{1'b0}}} == 32'hff200090   ) begin
+    // ( 0xff200090 .. 0xff200098 )
+    if ( {address[RG:PAD9],{PAD9{1'b0}}} == 32'hff200090  && write_transaction  ) begin
             src_channel = 18'b0000000000000100;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 14;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 17;
     end
 
     // ( 0xff2000a0 .. 0xff2000b0 )
     if ( {address[RG:PAD10],{PAD10{1'b0}}} == 32'hff2000a0   ) begin
             src_channel = 18'b0000000000001000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 15;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 14;
     end
 
     // ( 0xff202000 .. 0xff202020 )
@@ -295,7 +297,7 @@ module CPEN391_Computer_mm_interconnect_0_router_002
     // ( 0xff202040 .. 0xff202050 )
     if ( {address[RG:PAD14],{PAD14{1'b0}}} == 32'hff202040   ) begin
             src_channel = 18'b0000000001000000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 16;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 15;
     end
 
     // ( 0xff210000 .. 0xff220000 )

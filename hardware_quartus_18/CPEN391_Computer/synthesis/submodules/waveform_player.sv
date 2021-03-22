@@ -1,0 +1,132 @@
+/*
+ *  Memory-mapped programming instructions:
+ *    * The first 32-bits, corresponding to address 0, is a WRITE
+ *      Field to tell this module how many samples it should play.
+ *
+ *    * The second 32-bits, corresponding to address 1, contains the
+ *      START(S) and RESTART(R) flags. This field is WRITE only.
+ *      Bits 2-31 are reserved for future use.
+ *
+ *
+ * Offset          3                   2                   1                   0
+ * (bits):       1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+ *              +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * address = 0: |           length (number of 16-bit samples to play)           |
+ *              +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * address = 1: |                Reserved for Future use                    |R|S|
+ *              +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *
+ */
+module waveform_player(
+
+    // Avalon Memory-Mapped Connections
+    input clock,
+    input reset_n,
+
+    input unsigned address,
+    input write,
+
+    input unsigned [31:0] writedata,
+
+    // Avalaon Streaming Connections
+    // (To Audio Core)
+
+    // Avalon streaming interfaces must be on the same clock! So we will sync
+    // Commands to the clocks here.
+    input audio_clock,
+    input audio_reset,
+
+    output logic unsigned [15:0]  l_audio_data,
+    output logic                  l_audio_valid,
+    input                         l_audio_ready,
+
+    output logic unsigned [15:0]  r_audio_data,
+    output logic                  r_audio_valid,
+    input                         r_audio_ready
+);
+
+// Currently unsafe. Doublesync this as well.
+logic [31:0] max_audio_index;
+logic start;
+
+initial start = 0;
+
+initial l_audio_data = 0;
+initial r_audio_data = 0;
+
+always_ff @(posedge clock) begin
+    if (reset_n == 0) begin
+        start <= 0;
+    end
+
+    // memory mapped interface
+    else if (write) begin
+        if (address == 0) begin
+            max_audio_index <= writedata;
+        end
+
+        else begin
+            start <= writedata[0];
+        end
+    end
+end
+
+logic start_sync;
+
+doublesync doublesync_inst(
+    .indata(start),
+    .outdata(start_sync),
+    .clk(audio_clock),
+    .reset(audio_reset)
+);
+
+parameter WAITING       = 3'b000;
+parameter WRITE_AUDIO   = 3'b001;
+parameter UPDATE_SAMPLE = 3'b010;
+
+logic [2:0] state;
+
+initial state = WAITING;
+
+assign l_audio_valid = state[0];
+assign r_audio_valid = state[0];
+
+logic [31:0] audio_index;
+initial audio_index = 1;
+
+always_ff @(posedge audio_clock) begin
+
+  if (audio_reset == 1) begin
+      l_audio_data <= 0;
+      r_audio_data <= 0;
+      audio_index  <= 0;
+  end
+
+  else if (!start_sync) begin
+      audio_index <= 0;
+      state <= WAITING;
+  end
+
+  else case (state)
+      WAITING: if (l_audio_ready && r_audio_ready) state <= WRITE_AUDIO;
+
+      WRITE_AUDIO: state <= UPDATE_SAMPLE;
+
+      UPDATE_SAMPLE: begin
+          if (audio_index+1 >= max_audio_index) begin
+              audio_index <= 0;
+              l_audio_data <= ~l_audio_data;
+              r_audio_data <= ~r_audio_data;
+          end
+
+          else begin
+              audio_index <= audio_index + 1'b1;
+          end
+
+          state <= WAITING;
+      end
+  endcase
+
+end
+
+endmodule
