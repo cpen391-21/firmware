@@ -225,3 +225,20 @@ void mono_bt_player(void) {
 	}
 }
 
+void test_sdram(void) {
+	for (int i = 0; i < 10; i++) {
+		sdram.put(i, i*5);
+	}
+
+	// Since short is signed, it we should get
+	// -6, -5, -4... 0, 1, 2, 3
+	for (int i = 10; i < 20; i++) {
+		sdram.put(i, 65520+i);
+	}
+
+	for (int i = 0; i < 20; i++) {
+		printf("%4d, %5d\n", i, sdram.get(i));
+	}
+}
+
+

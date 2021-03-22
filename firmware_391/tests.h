@@ -17,10 +17,12 @@
 #include "parser.h"
 #include "switches.h"
 #include "waveform_player.h"
+#include "sdram.h"
 
 extern Switches switches;
 extern RS232 bluetooth;
 extern WaveformPlayer waveformplayer;
+extern SDRAM sdram;
 
 /* Half of 16 bits */
 #define amplitude 0x7FFD;
@@ -66,6 +68,9 @@ void print_byte_array(char *bytearr, int len);
 // (start/stop/data/set size) and control the memory-mapped audio
 // player using bluetooth.
 void mono_bt_player(void);
+
+// Write to the SDRAM and read back the data.
+void test_sdram(void);
 
 
 #endif /* TESTS_H_ */
