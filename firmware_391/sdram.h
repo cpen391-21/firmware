@@ -8,6 +8,8 @@
 #ifndef SDRAM_H_
 #define SDRAM_H_
 
+#include <stdio.h>
+
 class SDRAM {
 private:
 	volatile short *address;

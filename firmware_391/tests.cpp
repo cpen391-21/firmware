@@ -226,6 +226,25 @@ void mono_bt_player(void) {
 }
 
 void test_sdram(void) {
+
+	// Test all 32M (2^25) memory locations. 33554432
+	for (unsigned int i = 0; i < SDRAM_LEN; i++) {
+		sdram.put(i, i);
+		if (!(i % (SDRAM_LEN/16))) {
+			printf("Put Progress: %d/%d\n", i, SDRAM_LEN);
+		}
+	}
+
+	for (unsigned int i = 0; i < SDRAM_LEN; i++) {
+		short d = sdram.get(i);
+		if (d != (short) i) {
+			printf("Error at %d: Val: %d (should be %d)", i, d, (short) i);
+		}
+		if (!(i % (SDRAM_LEN/16))) {
+			printf("Get Progress: %d/%d\n", i, SDRAM_LEN);
+		}
+	}
+
 	for (int i = 0; i < 10; i++) {
 		sdram.put(i, i*5);
 	}

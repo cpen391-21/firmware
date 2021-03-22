@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2021.03.22.11:04:21 -->
+ <!-- 2021.03.22.15:19:48 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1616432659</value>
+  <value>1616447987</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -78251,7 +78251,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>SDRAM</moduleName>
     <slaveName>s1</slaveName>
     <name>SDRAM.s1</name>
-    <baseAddress>0</baseAddress>
+    <baseAddress>3221225472</baseAddress>
     <span>67108864</span>
    </memoryBlock>
    <memoryBlock>
@@ -84480,7 +84480,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.REFRESH_PERIOD</name>
-   <value>15.625</value>
+   <value>7.8125</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.REGISTER_DATA_IN</name>
@@ -84532,7 +84532,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_AC</name>
-   <value>5.5</value>
+   <value>5.4</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_MRD</name>
@@ -84540,7 +84540,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_RCD</name>
-   <value>20.0</value>
+   <value>15.0</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_RFC</name>
@@ -84548,7 +84548,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_RP</name>
-   <value>20.0</value>
+   <value>15.0</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.T_WR</name>
@@ -84620,7 +84620,7 @@ the requested settings for a module instance. -->
   </assignment>
   <parameter name="TAC">
    <type>double</type>
-   <value>5.5</value>
+   <value>5.4</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -84628,7 +84628,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="TRCD">
    <type>double</type>
-   <value>20.0</value>
+   <value>15.0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -84644,7 +84644,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="TRP">
    <type>double</type>
-   <value>20.0</value>
+   <value>15.0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -84740,7 +84740,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="refreshPeriod">
    <type>double</type>
-   <value>15.625</value>
+   <value>7.8125</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -86207,7 +86207,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1616432659</value>
+   <value>1616447987</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -86227,7 +86227,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1616432659</value>
+   <value>1616447987</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -86243,7 +86243,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1616432659</value>
+   <value>1616447987</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -102722,7 +102722,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x0000</value>
+   <value>0xc0000000</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

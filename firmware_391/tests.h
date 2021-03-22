@@ -30,6 +30,9 @@ extern SDRAM sdram;
 /* Big enough for 1 second of audio */
 #define AUDIO_DATA_MAX_SIZE 48000
 
+#define SDRAM_LEN 33554432
+
+
 // Plays a square wave repeatedly to the memory-mapped audio core
 void test_audio_square();
 

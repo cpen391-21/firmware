@@ -18,7 +18,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -1209,11 +1209,11 @@
    kind="altera_avalon_new_sdram_controller"
    version="18.1"
    enabled="1">
-  <parameter name="TAC" value="5.5" />
+  <parameter name="TAC" value="5.4" />
   <parameter name="TMRD" value="3" />
-  <parameter name="TRCD" value="20.0" />
+  <parameter name="TRCD" value="15.0" />
   <parameter name="TRFC" value="70.0" />
-  <parameter name="TRP" value="20.0" />
+  <parameter name="TRP" value="15.0" />
   <parameter name="TWR" value="14.0" />
   <parameter name="casLatency" value="3" />
   <parameter name="clockRate" value="50000000" />
@@ -1229,7 +1229,7 @@
   <parameter name="numberOfChipSelects" value="1" />
   <parameter name="pinsSharedViaTriState" value="false" />
   <parameter name="powerUpDelay" value="100.0" />
-  <parameter name="refreshPeriod" value="15.625" />
+  <parameter name="refreshPeriod" value="7.8125" />
   <parameter name="registerDataIn" value="true" />
   <parameter name="rowWidth" value="13" />
  </module>
@@ -1582,7 +1582,7 @@
    start="JTAG_To_FPGA_Bridge.master"
    end="SDRAM.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="baseAddress" value="0xc0000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
