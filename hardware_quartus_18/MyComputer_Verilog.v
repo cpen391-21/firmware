@@ -297,11 +297,11 @@ module MyComputer_Verilog (
 			
 			.rs232_RXD                       (GPIO_1[18]),                     //                rs232.RXD
 			.rs232_TXD                       (GPIO_1[19]),         
-    	    .audio_core_BCLK                 (AUD_BCLK),                 //           audio_core.BCLK
-		    .audio_core_DACDAT               (AUD_DACDAT),               //                     .DACDAT
-		    .audio_core_DACLRCK              (AUD_DACLRCK),              //                     .DACLRCK
-		    .audio_config_SDAT               (FPGA_I2C_SDAT),               //         audio_config.SDAT
-		    .audio_config_SCLK               (FPGA_I2C_SCLK),               //                     .SCLK
+    	   .audio_core_BCLK                 (AUD_BCLK),                 //           audio_core.BCLK
+   	   .audio_core_DACDAT               (AUD_DACDAT),               //                     .DACDAT
+	      .audio_core_DACLRCK              (AUD_DACLRCK),              //                     .DACLRCK
+		   .audio_config_SDAT               (FPGA_I2C_SDAT),               //         audio_config.SDAT
+		   .audio_config_SCLK               (FPGA_I2C_SCLK),               //                     .SCLK
 			.audio_out_clk_clk               (AUD_XCK)                //        audio_out_clk.clk
 
 		);

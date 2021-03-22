@@ -10,11 +10,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 #include "audio.h"
 #include "rs232.h"
 #include "parser.h"
+#include "switches.h"
+#include "waveform_player.h"
 
-#include <math.h>
 
 /* Half of 16 bits */
 #define amplitude 0x7FFD;
@@ -243,6 +246,18 @@ void mono_bt_player(void) {
 
 int main(void) {
 	//mono_bt_player();
-	setup_audio_sine();
-	test_audio_sine();
+	//setup_audio_sine();
+	//test_audio_sine();
+
+	Switches switches(0xFF200000);
+	WaveformPlayer waveformplayer(0xFF200090);
+
+	while (1) {
+		if (switches.newval()) {
+			printf("New Switch val: %02X\n", switches.get());
+			waveformplayer.stop();
+			waveformplayer.setlen(switches.get());
+			waveformplayer.start();
+		}
+	}
 }
