@@ -27,7 +27,6 @@ WaveformPlayer waveformplayer(0xFF200090);
 SDRAM                   sdram(0xC0000000);
 
 int main(void) {
-
 //	while (1) {
 //		if (switches.newval()) {
 //			printf("New Switch val: %02X\n", switches.get());
@@ -36,6 +35,5 @@ int main(void) {
 //			waveformplayer.start();
 //		}
 //	}
-
 	test_sdram();
 }
