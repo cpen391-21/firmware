@@ -1,9 +1,7 @@
 	CPEN391_Computer u0 (
 		.audio_config_SDAT               (<connected-to-audio_config_SDAT>),               //         audio_config.SDAT
 		.audio_config_SCLK               (<connected-to-audio_config_SCLK>),               //                     .SCLK
-		.audio_core_ADCDAT               (<connected-to-audio_core_ADCDAT>),               //           audio_core.ADCDAT
-		.audio_core_ADCLRCK              (<connected-to-audio_core_ADCLRCK>),              //                     .ADCLRCK
-		.audio_core_BCLK                 (<connected-to-audio_core_BCLK>),                 //                     .BCLK
+		.audio_core_BCLK                 (<connected-to-audio_core_BCLK>),                 //           audio_core.BCLK
 		.audio_core_DACDAT               (<connected-to-audio_core_DACDAT>),               //                     .DACDAT
 		.audio_core_DACLRCK              (<connected-to-audio_core_DACLRCK>),              //                     .DACLRCK
 		.audio_out_clk_clk               (<connected-to-audio_out_clk_clk>),               //        audio_out_clk.clk

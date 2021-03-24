@@ -141,7 +141,7 @@ module CPEN391_Computer_mm_interconnect_0_router_003
     localparam PAD4 = log2ceil(64'h50 - 64'h40); 
     localparam PAD5 = log2ceil(64'h60 - 64'h50); 
     localparam PAD6 = log2ceil(64'h88 - 64'h80); 
-    localparam PAD7 = log2ceil(64'ha0 - 64'h90); 
+    localparam PAD7 = log2ceil(64'h98 - 64'h90); 
     localparam PAD8 = log2ceil(64'hb0 - 64'ha0); 
     localparam PAD9 = log2ceil(64'h1008 - 64'h1000); 
     localparam PAD10 = log2ceil(64'h1010 - 64'h1008); 
@@ -187,6 +187,8 @@ module CPEN391_Computer_mm_interconnect_0_router_003
     // -------------------------------------------------------
     // Write and read transaction signals
     // -------------------------------------------------------
+    wire write_transaction;
+    assign write_transaction = sink_data[PKT_TRANS_WRITE];
     wire read_transaction;
     assign read_transaction  = sink_data[PKT_TRANS_READ];
 
@@ -247,19 +249,19 @@ module CPEN391_Computer_mm_interconnect_0_router_003
     // ( 0x80 .. 0x88 )
     if ( {address[RG:PAD6],{PAD6{1'b0}}} == 17'h80   ) begin
             src_channel = 18'b0000000000000100;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 17;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 16;
     end
 
-    // ( 0x90 .. 0xa0 )
-    if ( {address[RG:PAD7],{PAD7{1'b0}}} == 17'h90   ) begin
+    // ( 0x90 .. 0x98 )
+    if ( {address[RG:PAD7],{PAD7{1'b0}}} == 17'h90  && write_transaction  ) begin
             src_channel = 18'b0000000000000001;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 14;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 17;
     end
 
     // ( 0xa0 .. 0xb0 )
     if ( {address[RG:PAD8],{PAD8{1'b0}}} == 17'ha0   ) begin
             src_channel = 18'b0000000000000010;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 15;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 14;
     end
 
     // ( 0x1000 .. 0x1008 )
@@ -295,7 +297,7 @@ module CPEN391_Computer_mm_interconnect_0_router_003
     // ( 0x2040 .. 0x2050 )
     if ( {address[RG:PAD14],{PAD14{1'b0}}} == 17'h2040   ) begin
             src_channel = 18'b0000000000010000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 16;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 15;
     end
 
     // ( 0x10000 .. 0x20000 )

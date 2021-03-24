@@ -6,9 +6,7 @@
 module CPEN391_Computer (
 		inout  wire        audio_config_SDAT,               //         audio_config.SDAT
 		output wire        audio_config_SCLK,               //                     .SCLK
-		input  wire        audio_core_ADCDAT,               //           audio_core.ADCDAT
-		input  wire        audio_core_ADCLRCK,              //                     .ADCLRCK
-		input  wire        audio_core_BCLK,                 //                     .BCLK
+		input  wire        audio_core_BCLK,                 //           audio_core.BCLK
 		output wire        audio_core_DACDAT,               //                     .DACDAT
 		input  wire        audio_core_DACLRCK,              //                     .DACLRCK
 		output wire        audio_out_clk_clk,               //        audio_out_clk.clk
@@ -115,7 +113,13 @@ module CPEN391_Computer (
 		input  wire        system_pll_ref_reset_reset       // system_pll_ref_reset.reset
 	);
 
-	wire         system_pll_sys_clk_clk;                                                        // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LCD_0:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, audio_pll_0:ref_clk_clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rs232_0:clk, rst_controller:clk, rst_controller_005:clk]
+	wire         waveform_player_0_l_audio_streaming_source_valid;                              // waveform_player_0:l_audio_valid -> audio_0:to_dac_left_channel_valid
+	wire  [15:0] waveform_player_0_l_audio_streaming_source_data;                               // waveform_player_0:l_audio_data -> audio_0:to_dac_left_channel_data
+	wire         waveform_player_0_l_audio_streaming_source_ready;                              // audio_0:to_dac_left_channel_ready -> waveform_player_0:l_audio_ready
+	wire         waveform_player_0_r_audio_streaming_source_valid;                              // waveform_player_0:r_audio_valid -> audio_0:to_dac_right_channel_valid
+	wire  [15:0] waveform_player_0_r_audio_streaming_source_data;                               // waveform_player_0:r_audio_data -> audio_0:to_dac_right_channel_data
+	wire         waveform_player_0_r_audio_streaming_source_ready;                              // audio_0:to_dac_right_channel_ready -> waveform_player_0:r_audio_ready
+	wire         system_pll_sys_clk_clk;                                                        // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LCD_0:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, audio_pll_0:ref_clk_clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rs232_0:clk, rst_controller:clk, rst_controller_005:clk, waveform_player_0:clock]
 	wire   [1:0] arm_a9_hps_h2f_axi_master_awburst;                                             // ARM_A9_HPS:h2f_AWBURST -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_awburst
 	wire   [3:0] arm_a9_hps_h2f_axi_master_arlen;                                               // ARM_A9_HPS:h2f_ARLEN -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_arlen
 	wire   [7:0] arm_a9_hps_h2f_axi_master_wstrb;                                               // ARM_A9_HPS:h2f_WSTRB -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_wstrb
@@ -212,12 +216,9 @@ module CPEN391_Computer (
 	wire         mm_interconnect_0_onchip_sram_s1_write;                                        // mm_interconnect_0:Onchip_SRAM_s1_write -> Onchip_SRAM:write
 	wire  [31:0] mm_interconnect_0_onchip_sram_s1_writedata;                                    // mm_interconnect_0:Onchip_SRAM_s1_writedata -> Onchip_SRAM:writedata
 	wire         mm_interconnect_0_onchip_sram_s1_clken;                                        // mm_interconnect_0:Onchip_SRAM_s1_clken -> Onchip_SRAM:clken
-	wire         mm_interconnect_0_audio_0_avalon_audio_slave_chipselect;                       // mm_interconnect_0:audio_0_avalon_audio_slave_chipselect -> audio_0:chipselect
-	wire  [31:0] mm_interconnect_0_audio_0_avalon_audio_slave_readdata;                         // audio_0:readdata -> mm_interconnect_0:audio_0_avalon_audio_slave_readdata
-	wire   [1:0] mm_interconnect_0_audio_0_avalon_audio_slave_address;                          // mm_interconnect_0:audio_0_avalon_audio_slave_address -> audio_0:address
-	wire         mm_interconnect_0_audio_0_avalon_audio_slave_read;                             // mm_interconnect_0:audio_0_avalon_audio_slave_read -> audio_0:read
-	wire         mm_interconnect_0_audio_0_avalon_audio_slave_write;                            // mm_interconnect_0:audio_0_avalon_audio_slave_write -> audio_0:write
-	wire  [31:0] mm_interconnect_0_audio_0_avalon_audio_slave_writedata;                        // mm_interconnect_0:audio_0_avalon_audio_slave_writedata -> audio_0:writedata
+	wire   [0:0] mm_interconnect_0_waveform_player_0_hps_avalon_slave_address;                  // mm_interconnect_0:waveform_player_0_HPS_avalon_slave_address -> waveform_player_0:address
+	wire         mm_interconnect_0_waveform_player_0_hps_avalon_slave_write;                    // mm_interconnect_0:waveform_player_0_HPS_avalon_slave_write -> waveform_player_0:write
+	wire  [31:0] mm_interconnect_0_waveform_player_0_hps_avalon_slave_writedata;                // mm_interconnect_0:waveform_player_0_HPS_avalon_slave_writedata -> waveform_player_0:writedata
 	wire  [31:0] mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_readdata;    // audio_and_video_config_0:readdata -> mm_interconnect_0:audio_and_video_config_0_avalon_av_config_slave_readdata
 	wire         mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_waitrequest; // audio_and_video_config_0:waitrequest -> mm_interconnect_0:audio_and_video_config_0_avalon_av_config_slave_waitrequest
 	wire   [1:0] mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_address;     // mm_interconnect_0:audio_and_video_config_0_avalon_av_config_slave_address -> audio_and_video_config_0:address
@@ -346,20 +347,19 @@ module CPEN391_Computer (
 	wire         mm_interconnect_1_arm_a9_hps_f2h_axi_slave_rvalid;                             // ARM_A9_HPS:f2h_RVALID -> mm_interconnect_1:ARM_A9_HPS_f2h_axi_slave_rvalid
 	wire         irq_mapper_receiver0_irq;                                                      // IO_Bridge:avalon_irq -> irq_mapper:receiver0_irq
 	wire         irq_mapper_receiver1_irq;                                                      // rs232_0:irq -> irq_mapper:receiver1_irq
-	wire         irq_mapper_receiver2_irq;                                                      // audio_0:irq -> irq_mapper:receiver2_irq
-	wire         irq_mapper_receiver3_irq;                                                      // PushButtons:irq -> irq_mapper:receiver3_irq
-	wire         irq_mapper_receiver4_irq;                                                      // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver4_irq
-	wire         irq_mapper_receiver5_irq;                                                      // Interval_Timer:irq -> irq_mapper:receiver5_irq
+	wire         irq_mapper_receiver2_irq;                                                      // PushButtons:irq -> irq_mapper:receiver2_irq
+	wire         irq_mapper_receiver3_irq;                                                      // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver3_irq
+	wire         irq_mapper_receiver4_irq;                                                      // Interval_Timer:irq -> irq_mapper:receiver4_irq
 	wire  [31:0] arm_a9_hps_f2h_irq0_irq;                                                       // irq_mapper:sender_irq -> ARM_A9_HPS:f2h_irq_p0
 	wire         irq_mapper_001_receiver0_irq;                                                  // JTAG_UART_for_ARM_1:av_irq -> irq_mapper_001:receiver0_irq
 	wire  [31:0] arm_a9_hps_f2h_irq1_irq;                                                       // irq_mapper_001:sender_irq -> ARM_A9_HPS:f2h_irq_p1
-	wire         rst_controller_reset_out_reset;                                                // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LCD_0:reset_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rs232_0:reset, rst_translator:in_reset]
+	wire         rst_controller_reset_out_reset;                                                // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LCD_0:reset_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rs232_0:reset, rst_translator:in_reset, waveform_player_0:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                            // rst_controller:reset_req -> [Onchip_SRAM:reset_req, rst_translator:reset_req_in]
 	wire         arm_a9_hps_h2f_reset_reset;                                                    // ARM_A9_HPS:h2f_rst_n -> [rst_controller:reset_in0, rst_controller_001:reset_in0, rst_controller_002:reset_in0, rst_controller_004:reset_in0, rst_controller_005:reset_in0]
 	wire         system_pll_reset_source_reset;                                                 // System_PLL:reset_source_reset -> [rst_controller:reset_in1, rst_controller_001:reset_in1, rst_controller_002:reset_in1, rst_controller_004:reset_in1]
 	wire         rst_controller_001_reset_out_reset;                                            // rst_controller_001:reset_out -> JTAG_To_FPGA_Bridge:clk_reset_reset
 	wire         rst_controller_002_reset_out_reset;                                            // rst_controller_002:reset_out -> JTAG_To_HPS_Bridge:clk_reset_reset
-	wire         rst_controller_003_reset_out_reset;                                            // rst_controller_003:reset_out -> [audio_0:reset, audio_and_video_config_0:reset, mm_interconnect_0:audio_0_reset_reset_bridge_in_reset_reset]
+	wire         rst_controller_003_reset_out_reset;                                            // rst_controller_003:reset_out -> [audio_0:reset, audio_and_video_config_0:reset, mm_interconnect_0:audio_and_video_config_0_reset_reset_bridge_in_reset_reset, waveform_player_0:audio_reset]
 	wire         audio_pll_0_reset_source_reset;                                                // audio_pll_0:reset_source_reset -> rst_controller_003:reset_in0
 	wire         rst_controller_004_reset_out_reset;                                            // rst_controller_004:reset_out -> audio_pll_0:ref_reset_reset
 	wire         rst_controller_005_reset_out_reset;                                            // rst_controller_005:reset_out -> [mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:ARM_A9_HPS_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset]
@@ -621,7 +621,7 @@ module CPEN391_Computer (
 		.readdata   (mm_interconnect_0_interval_timer_s1_readdata),   //      .readdata
 		.chipselect (mm_interconnect_0_interval_timer_s1_chipselect), //      .chipselect
 		.write_n    (~mm_interconnect_0_interval_timer_s1_write),     //      .write_n
-		.irq        (irq_mapper_receiver5_irq)                        //   irq.irq
+		.irq        (irq_mapper_receiver4_irq)                        //   irq.irq
 	);
 
 	CPEN391_Computer_JTAG_To_FPGA_Bridge #(
@@ -670,7 +670,7 @@ module CPEN391_Computer (
 		.av_write_n     (~mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_write),      //                  .write_n
 		.av_writedata   (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_writedata),   //                  .writedata
 		.av_waitrequest (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_waitrequest), //                  .waitrequest
-		.av_irq         (irq_mapper_receiver4_irq)                                             //               irq.irq
+		.av_irq         (irq_mapper_receiver3_irq)                                             //               irq.irq
 	);
 
 	CPEN391_Computer_JTAG_UART_for_ARM_0 jtag_uart_for_arm_1 (
@@ -738,7 +738,7 @@ module CPEN391_Computer (
 		.chipselect (mm_interconnect_0_pushbuttons_s1_chipselect), //                    .chipselect
 		.readdata   (mm_interconnect_0_pushbuttons_s1_readdata),   //                    .readdata
 		.in_port    (pushbuttons_export),                          // external_connection.export
-		.irq        (irq_mapper_receiver3_irq)                     //                 irq.irq
+		.irq        (irq_mapper_receiver2_irq)                     //                 irq.irq
 	);
 
 	CPEN391_Computer_SDRAM sdram (
@@ -788,20 +788,23 @@ module CPEN391_Computer (
 	);
 
 	CPEN391_Computer_audio_0 audio_0 (
-		.clk         (audio_out_clk_clk),                                       //                clk.clk
-		.reset       (rst_controller_003_reset_out_reset),                      //              reset.reset
-		.address     (mm_interconnect_0_audio_0_avalon_audio_slave_address),    // avalon_audio_slave.address
-		.chipselect  (mm_interconnect_0_audio_0_avalon_audio_slave_chipselect), //                   .chipselect
-		.read        (mm_interconnect_0_audio_0_avalon_audio_slave_read),       //                   .read
-		.write       (mm_interconnect_0_audio_0_avalon_audio_slave_write),      //                   .write
-		.writedata   (mm_interconnect_0_audio_0_avalon_audio_slave_writedata),  //                   .writedata
-		.readdata    (mm_interconnect_0_audio_0_avalon_audio_slave_readdata),   //                   .readdata
-		.irq         (irq_mapper_receiver2_irq),                                //          interrupt.irq
-		.AUD_ADCDAT  (audio_core_ADCDAT),                                       // external_interface.export
-		.AUD_ADCLRCK (audio_core_ADCLRCK),                                      //                   .export
-		.AUD_BCLK    (audio_core_BCLK),                                         //                   .export
-		.AUD_DACDAT  (audio_core_DACDAT),                                       //                   .export
-		.AUD_DACLRCK (audio_core_DACLRCK)                                       //                   .export
+		.clk                          (audio_out_clk_clk),                                //                         clk.clk
+		.reset                        (rst_controller_003_reset_out_reset),               //                       reset.reset
+		.from_adc_left_channel_ready  (),                                                 //  avalon_left_channel_source.ready
+		.from_adc_left_channel_data   (),                                                 //                            .data
+		.from_adc_left_channel_valid  (),                                                 //                            .valid
+		.from_adc_right_channel_ready (),                                                 // avalon_right_channel_source.ready
+		.from_adc_right_channel_data  (),                                                 //                            .data
+		.from_adc_right_channel_valid (),                                                 //                            .valid
+		.to_dac_left_channel_data     (waveform_player_0_l_audio_streaming_source_data),  //    avalon_left_channel_sink.data
+		.to_dac_left_channel_valid    (waveform_player_0_l_audio_streaming_source_valid), //                            .valid
+		.to_dac_left_channel_ready    (waveform_player_0_l_audio_streaming_source_ready), //                            .ready
+		.to_dac_right_channel_data    (waveform_player_0_r_audio_streaming_source_data),  //   avalon_right_channel_sink.data
+		.to_dac_right_channel_valid   (waveform_player_0_r_audio_streaming_source_valid), //                            .valid
+		.to_dac_right_channel_ready   (waveform_player_0_r_audio_streaming_source_ready), //                            .ready
+		.AUD_BCLK                     (audio_core_BCLK),                                  //          external_interface.export
+		.AUD_DACDAT                   (audio_core_DACDAT),                                //                            .export
+		.AUD_DACLRCK                  (audio_core_DACLRCK)                                //                            .export
 	);
 
 	CPEN391_Computer_audio_and_video_config_0 audio_and_video_config_0 (
@@ -848,6 +851,26 @@ module CPEN391_Computer (
 		.irq        (irq_mapper_receiver1_irq),                                //          interrupt.irq
 		.UART_RXD   (rs232_RXD),                                               // external_interface.export
 		.UART_TXD   (rs232_TXD)                                                //                   .export
+	);
+
+	waveform_player #(
+		.WAITING       (4'b0000),
+		.WRITE_AUDIO   (4'b0001),
+		.UPDATE_SAMPLE (4'b0010)
+	) waveform_player_0 (
+		.reset_n       (~rst_controller_reset_out_reset),                                //                    reset.reset_n
+		.clock         (system_pll_sys_clk_clk),                                         //                    clock.clk
+		.address       (mm_interconnect_0_waveform_player_0_hps_avalon_slave_address),   //         HPS_avalon_slave.address
+		.write         (mm_interconnect_0_waveform_player_0_hps_avalon_slave_write),     //                         .write
+		.writedata     (mm_interconnect_0_waveform_player_0_hps_avalon_slave_writedata), //                         .writedata
+		.audio_clock   (audio_out_clk_clk),                                              //              audio_clock.clk
+		.audio_reset   (rst_controller_003_reset_out_reset),                             //              audio_reset.reset
+		.l_audio_ready (waveform_player_0_l_audio_streaming_source_ready),               // l_audio_streaming_source.ready
+		.l_audio_data  (waveform_player_0_l_audio_streaming_source_data),                //                         .data
+		.l_audio_valid (waveform_player_0_l_audio_streaming_source_valid),               //                         .valid
+		.r_audio_data  (waveform_player_0_r_audio_streaming_source_data),                // r_audio_streaming_source.data
+		.r_audio_ready (waveform_player_0_r_audio_streaming_source_ready),               //                         .ready
+		.r_audio_valid (waveform_player_0_r_audio_streaming_source_valid)                //                         .valid
 	);
 
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (
@@ -926,7 +949,7 @@ module CPEN391_Computer (
 		.audio_pll_0_audio_clk_clk                                             (audio_out_clk_clk),                                                             //                                           audio_pll_0_audio_clk.clk
 		.System_PLL_sys_clk_clk                                                (system_pll_sys_clk_clk),                                                        //                                              System_PLL_sys_clk.clk
 		.ARM_A9_HPS_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset (rst_controller_005_reset_out_reset),                                            // ARM_A9_HPS_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset.reset
-		.audio_0_reset_reset_bridge_in_reset_reset                             (rst_controller_003_reset_out_reset),                                            //                             audio_0_reset_reset_bridge_in_reset.reset
+		.audio_and_video_config_0_reset_reset_bridge_in_reset_reset            (rst_controller_003_reset_out_reset),                                            //            audio_and_video_config_0_reset_reset_bridge_in_reset.reset
 		.JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset             (rst_controller_reset_out_reset),                                                //             JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset.reset
 		.SDRAM_reset_reset_bridge_in_reset_reset                               (rst_controller_reset_out_reset),                                                //                               SDRAM_reset_reset_bridge_in_reset.reset
 		.JTAG_To_FPGA_Bridge_master_address                                    (jtag_to_fpga_bridge_master_address),                                            //                                      JTAG_To_FPGA_Bridge_master.address
@@ -937,12 +960,6 @@ module CPEN391_Computer (
 		.JTAG_To_FPGA_Bridge_master_readdatavalid                              (jtag_to_fpga_bridge_master_readdatavalid),                                      //                                                                .readdatavalid
 		.JTAG_To_FPGA_Bridge_master_write                                      (jtag_to_fpga_bridge_master_write),                                              //                                                                .write
 		.JTAG_To_FPGA_Bridge_master_writedata                                  (jtag_to_fpga_bridge_master_writedata),                                          //                                                                .writedata
-		.audio_0_avalon_audio_slave_address                                    (mm_interconnect_0_audio_0_avalon_audio_slave_address),                          //                                      audio_0_avalon_audio_slave.address
-		.audio_0_avalon_audio_slave_write                                      (mm_interconnect_0_audio_0_avalon_audio_slave_write),                            //                                                                .write
-		.audio_0_avalon_audio_slave_read                                       (mm_interconnect_0_audio_0_avalon_audio_slave_read),                             //                                                                .read
-		.audio_0_avalon_audio_slave_readdata                                   (mm_interconnect_0_audio_0_avalon_audio_slave_readdata),                         //                                                                .readdata
-		.audio_0_avalon_audio_slave_writedata                                  (mm_interconnect_0_audio_0_avalon_audio_slave_writedata),                        //                                                                .writedata
-		.audio_0_avalon_audio_slave_chipselect                                 (mm_interconnect_0_audio_0_avalon_audio_slave_chipselect),                       //                                                                .chipselect
 		.audio_and_video_config_0_avalon_av_config_slave_address               (mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_address),     //                 audio_and_video_config_0_avalon_av_config_slave.address
 		.audio_and_video_config_0_avalon_av_config_slave_write                 (mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_write),       //                                                                .write
 		.audio_and_video_config_0_avalon_av_config_slave_read                  (mm_interconnect_0_audio_and_video_config_0_avalon_av_config_slave_read),        //                                                                .read
@@ -1038,7 +1055,10 @@ module CPEN391_Computer (
 		.Slider_Switches_s1_address                                            (mm_interconnect_0_slider_switches_s1_address),                                  //                                              Slider_Switches_s1.address
 		.Slider_Switches_s1_readdata                                           (mm_interconnect_0_slider_switches_s1_readdata),                                 //                                                                .readdata
 		.SysID_control_slave_address                                           (mm_interconnect_0_sysid_control_slave_address),                                 //                                             SysID_control_slave.address
-		.SysID_control_slave_readdata                                          (mm_interconnect_0_sysid_control_slave_readdata)                                 //                                                                .readdata
+		.SysID_control_slave_readdata                                          (mm_interconnect_0_sysid_control_slave_readdata),                                //                                                                .readdata
+		.waveform_player_0_HPS_avalon_slave_address                            (mm_interconnect_0_waveform_player_0_hps_avalon_slave_address),                  //                              waveform_player_0_HPS_avalon_slave.address
+		.waveform_player_0_HPS_avalon_slave_write                              (mm_interconnect_0_waveform_player_0_hps_avalon_slave_write),                    //                                                                .write
+		.waveform_player_0_HPS_avalon_slave_writedata                          (mm_interconnect_0_waveform_player_0_hps_avalon_slave_writedata)                 //                                                                .writedata
 	);
 
 	CPEN391_Computer_mm_interconnect_1 mm_interconnect_1 (
@@ -1102,7 +1122,6 @@ module CPEN391_Computer (
 		.receiver2_irq (irq_mapper_receiver2_irq), // receiver2.irq
 		.receiver3_irq (irq_mapper_receiver3_irq), // receiver3.irq
 		.receiver4_irq (irq_mapper_receiver4_irq), // receiver4.irq
-		.receiver5_irq (irq_mapper_receiver5_irq), // receiver5.irq
 		.sender_irq    (arm_a9_hps_f2h_irq0_irq)   //    sender.irq
 	);
 

@@ -222,7 +222,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -248,7 +248,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -298,13 +298,10 @@
          value = "20";
          type = "int";
       }
-   }
-   element audio_0.interrupt
-   {
-      datum _tags
+      datum sopceditor_expanded
       {
-         value = "";
-         type = "String";
+         value = "1";
+         type = "boolean";
       }
    }
    element audio_and_video_config_0
@@ -355,6 +352,14 @@
       {
          value = "1";
          type = "boolean";
+      }
+   }
+   element waveform_player_0
+   {
+      datum _sortIndex
+      {
+         value = "24";
+         type = "int";
       }
    }
 }
@@ -1204,11 +1209,11 @@
    kind="altera_avalon_new_sdram_controller"
    version="18.1"
    enabled="1">
-  <parameter name="TAC" value="5.5" />
+  <parameter name="TAC" value="5.4" />
   <parameter name="TMRD" value="3" />
-  <parameter name="TRCD" value="20.0" />
+  <parameter name="TRCD" value="15.0" />
   <parameter name="TRFC" value="70.0" />
-  <parameter name="TRP" value="20.0" />
+  <parameter name="TRP" value="15.0" />
   <parameter name="TWR" value="14.0" />
   <parameter name="casLatency" value="3" />
   <parameter name="clockRate" value="50000000" />
@@ -1224,7 +1229,7 @@
   <parameter name="numberOfChipSelects" value="1" />
   <parameter name="pinsSharedViaTriState" value="false" />
   <parameter name="powerUpDelay" value="100.0" />
-  <parameter name="refreshPeriod" value="15.625" />
+  <parameter name="refreshPeriod" value="7.8125" />
   <parameter name="registerDataIn" value="true" />
   <parameter name="rowWidth" value="13" />
  </module>
@@ -1276,9 +1281,9 @@
    enabled="1">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="12288135" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
-  <parameter name="audio_in" value="true" />
+  <parameter name="audio_in" value="false" />
   <parameter name="audio_out" value="true" />
-  <parameter name="avalon_bus_type" value="Memory Mapped" />
+  <parameter name="avalon_bus_type" value="Streaming" />
   <parameter name="dw" value="16" />
  </module>
  <module
@@ -1337,6 +1342,15 @@
   <parameter name="parity" value="None" />
   <parameter name="stop_bits" value="1" />
  </module>
+ <module
+   name="waveform_player_0"
+   kind="waveform_player"
+   version="1.0"
+   enabled="1">
+  <parameter name="UPDATE_SAMPLE" value="2" />
+  <parameter name="WAITING" value="0" />
+  <parameter name="WRITE_AUDIO" value="1" />
+ </module>
  <connection
    kind="avalon"
    version="18.1"
@@ -1359,7 +1373,7 @@
    kind="avalon"
    version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
-   end="audio_0.avalon_audio_slave">
+   end="waveform_player_0.HPS_avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0090" />
   <parameter name="defaultConnection" value="false" />
@@ -1503,7 +1517,7 @@
    kind="avalon"
    version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
-   end="audio_0.avalon_audio_slave">
+   end="waveform_player_0.HPS_avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0xff200090" />
   <parameter name="defaultConnection" value="false" />
@@ -1568,7 +1582,7 @@
    start="JTAG_To_FPGA_Bridge.master"
    end="SDRAM.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="baseAddress" value="0xc0000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1652,6 +1666,21 @@
   <parameter name="baseAddress" value="0xff202030" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="avalon_streaming"
+   version="18.1"
+   start="waveform_player_0.l_audio_streaming_source"
+   end="audio_0.avalon_left_channel_sink" />
+ <connection
+   kind="avalon_streaming"
+   version="18.1"
+   start="waveform_player_0.r_audio_streaming_source"
+   end="audio_0.avalon_right_channel_sink" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="audio_pll_0.audio_clk"
+   end="waveform_player_0.audio_clock" />
  <connection
    kind="clock"
    version="18.1"
@@ -1757,6 +1786,11 @@
    kind="clock"
    version="18.1"
    start="System_PLL.sys_clk"
+   end="waveform_player_0.clock" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="System_PLL.sys_clk"
    end="ARM_A9_HPS.f2h_axi_clock" />
  <connection
    kind="clock"
@@ -1786,13 +1820,6 @@
    start="ARM_A9_HPS.f2h_irq0"
    end="rs232_0.interrupt">
   <parameter name="irqNumber" value="3" />
- </connection>
- <connection
-   kind="interrupt"
-   version="18.1"
-   start="ARM_A9_HPS.f2h_irq0"
-   end="audio_0.interrupt">
-  <parameter name="irqNumber" value="4" />
  </connection>
  <connection
    kind="interrupt"
@@ -1916,7 +1943,17 @@
    kind="reset"
    version="18.1"
    start="ARM_A9_HPS.h2f_reset"
+   end="waveform_player_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="ARM_A9_HPS.h2f_reset"
    end="Onchip_SRAM.reset1" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="audio_pll_0.reset_source"
+   end="waveform_player_0.audio_reset" />
  <connection
    kind="reset"
    version="18.1"
@@ -2017,6 +2054,11 @@
    version="18.1"
    start="audio_pll_0.reset_source"
    end="audio_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="System_PLL.reset_source"
+   end="waveform_player_0.reset" />
  <connection
    kind="reset"
    version="18.1"

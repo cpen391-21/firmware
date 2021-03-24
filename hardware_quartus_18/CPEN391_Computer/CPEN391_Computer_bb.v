@@ -2,8 +2,6 @@
 module CPEN391_Computer (
 	audio_config_SDAT,
 	audio_config_SCLK,
-	audio_core_ADCDAT,
-	audio_core_ADCLRCK,
 	audio_core_BCLK,
 	audio_core_DACDAT,
 	audio_core_DACLRCK,
@@ -112,8 +110,6 @@ module CPEN391_Computer (
 
 	inout		audio_config_SDAT;
 	output		audio_config_SCLK;
-	input		audio_core_ADCDAT;
-	input		audio_core_ADCLRCK;
 	input		audio_core_BCLK;
 	output		audio_core_DACDAT;
 	input		audio_core_DACLRCK;

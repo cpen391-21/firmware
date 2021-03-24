@@ -1,0 +1,8 @@
+C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.v {1 {vlog -work work -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.v
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module doublesync
+
+Top level modules:
+	doublesync
+
+} {} {}}
