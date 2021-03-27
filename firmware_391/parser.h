@@ -22,4 +22,27 @@ class Parser {
         int startflag();
 };
 
+message bt_interrupt {
+    required enum command { start_sine, start_dc, start_custom, stop };
+    required int32 intended_duration;
+    optional double frequency;
+    optional double amplitude;
+    repeated byte audiodata;
+} 
+
+// sent periodically to confirm operation on phone app.
+message bt_response { 
+    required enum status { sine, dc, custom, stopped };
+    required double impedance;
+    required double total_duration; 
+    required int32 device_id;
+}
+
+Message logistical_data {
+    required enum status { sine, dc, custom, stopped };
+    required int32 intended_duration;
+    required int32 total_duration;
+}
+
+
 #endif //PARSER_H
