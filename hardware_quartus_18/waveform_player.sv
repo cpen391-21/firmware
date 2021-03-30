@@ -28,6 +28,19 @@ module waveform_player(
 
     input unsigned [31:0] writedata,
 
+
+    // Avalon Memory-Mapped SDRAM controller connections
+    output [25:0] sdram_addr,
+    output [1:0]  sdram_byteenable_n,
+    output        sdram_chipselect,
+    output [15:0] sdram_writedata,
+    output        sdram_read_n,
+    output        sdram_write_n,
+
+    input  [15:0] sdram_readdata,
+    input         sdram_readdata_valid,
+    input         sdram_waitrequest,
+
     // Avalaon Streaming Connections
     // (To Audio Core)
 
@@ -44,6 +57,14 @@ module waveform_player(
     output logic                  r_audio_valid,
     input                         r_audio_ready
 );
+
+    // Avalon Memory-Mapped SDRAM controller connections
+assign sdram_addr = 1'b0;
+assign sdram_byteenable_n = 1'b0;
+assign sdram_chipselect = 1'b1;
+assign sdram_writedata = 1'b0;
+assign sdram_read_n = 1'b1;
+assign sdram_write_n = 1'b1;
 
 // Currently unsafe. Doublesync this as well.
 logic [31:0] max_audio_index;
@@ -71,8 +92,27 @@ always_ff @(posedge clock) begin
     end
 end
 
-logic start_sync;
+// BEGIN: Audio player FSM
+assign sdram_byteenable_n = 2'b11;
+assign sdram_chipselect   = 1'b1;
+assign sdram_writedata    = 16'b0;
+assign sdram_write_n      = 1'b1;
 
+// Inputs to FSM
+logic        start_sync;
+logic [15:0] sdram_readdata_sync;
+logic        sdram_readdata_valid_sync;
+logic        sdram_waitrequest_sync;
+
+// FSM outputs
+logic        [25:0] sdram_addr_sync;
+logic        sdram_read_n_sync;
+
+// UNSAFE!!
+assign sdram_readdata_sync = sdram_readdata;
+assign sdram_addr = sdram_addr_sync;
+
+// Inputs to 12Mhz FSM
 doublesync doublesync_inst(
     .indata(start),
     .outdata(start_sync),
@@ -102,6 +142,8 @@ always_ff @(posedge audio_clock) begin
       audio_index  <= 0;
   end
 
+  // If we have not received the start flag from the waveform_player's slave
+  // interface, we do nothing!
   else if (!start_sync) begin
       audio_index <= 0;
       state <= WAITING;
