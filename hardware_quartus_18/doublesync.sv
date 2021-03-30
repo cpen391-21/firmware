@@ -15,6 +15,9 @@ output [WIDTH-1:0] outdata;
 reg [WIDTH-1:0] reg1;
 reg [WIDTH-1:0] reg2;
 
+initial reg1 = {WIDTH{1'b0}};
+initial reg2 = {WIDTH{1'b0}};
+
 always @(posedge clk or posedge reset)
 begin
 	 if (reset) begin

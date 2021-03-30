@@ -23,6 +23,19 @@ module tb_waveform_player();
     reg unsigned [15:0]  r_audio_data;
     reg                  r_audio_valid;
 
+
+    // Avalon Memory-Mapped SDRAM controller connections
+    reg [25:0] sdram_addr;
+    reg [1:0]  sdram_byteenable_n;
+    reg        sdram_chipselect;
+    reg [15:0] sdram_writedata;
+    reg        sdram_read_n;
+    reg        sdram_write_n;
+
+    reg  [15:0] sdram_readdata;
+    reg         sdram_readdata_valid;
+    reg         sdram_waitrequest;
+
     waveform_player dut(.*);
 
     initial begin
