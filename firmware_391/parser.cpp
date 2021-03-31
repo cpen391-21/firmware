@@ -79,7 +79,7 @@ int Parser::getdata(char **data) {
         }
     }
 
-    if (i == 256) {
+    if (i == BUFLEN) {
         printf("Buffer overflow!\n");
     }
 
