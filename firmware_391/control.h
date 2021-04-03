@@ -19,11 +19,12 @@
 
 #define STREAM_TIMEOUT  5
 
-#define PREFIX          "BT+"
+#define PREFIX          "EN+"
 #define PREFIX_LEN      3
 #define TERMINATION     '\r'
 
 enum command {START, STP, STREAM};
+
 /* what the parser expects for the next part of the in progress command: 
 * PREF: rest of prefix
 * CMD: rest of command text (start, stop)
