@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2021.03.28.14:57:49 -->
+ <!-- 2021.04.02.18:23:22 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1616965067</value>
+  <value>1617409400</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -86207,7 +86207,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1616965067</value>
+   <value>1617409400</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -86227,7 +86227,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1616965067</value>
+   <value>1617409400</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -86243,7 +86243,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1616965067</value>
+   <value>1617409400</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -90451,30 +90451,6 @@ parameters are a RESULT of the module parameters. -->
    path="waveform_player_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
-  <parameter name="WAITING">
-   <type>java.math.BigInteger</type>
-   <value>0</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="WRITE_AUDIO">
-   <type>java.math.BigInteger</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="UPDATE_SAMPLE">
-   <type>java.math.BigInteger</type>
-   <value>2</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -91478,7 +91454,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="maximumPendingReadTransactions">
     <type>int</type>
-    <value>0</value>
+    <value>1</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -91618,7 +91594,7 @@ parameters are a RESULT of the module parameters. -->
     <name>sdram_waitrequest</name>
     <direction>Input</direction>
     <width>1</width>
-    <role>waitrequest_n</role>
+    <role>waitrequest</role>
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>

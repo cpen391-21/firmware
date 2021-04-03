@@ -862,11 +862,7 @@ module CPEN391_Computer (
 		.UART_TXD   (rs232_TXD)                                                //                   .export
 	);
 
-	waveform_player #(
-		.WAITING       (4'b0000),
-		.WRITE_AUDIO   (4'b0001),
-		.UPDATE_SAMPLE (4'b0010)
-	) waveform_player_0 (
+	waveform_player waveform_player_0 (
 		.reset_n              (~rst_controller_reset_out_reset),                                //                    reset.reset_n
 		.clock                (system_pll_sys_clk_clk),                                         //                    clock.clk
 		.address              (mm_interconnect_0_waveform_player_0_hps_avalon_slave_address),   //         HPS_avalon_slave.address
@@ -888,7 +884,7 @@ module CPEN391_Computer (
 		.sdram_write_n        (waveform_player_0_sdram_avalon_master_write),                    //                         .write_n
 		.sdram_readdata       (waveform_player_0_sdram_avalon_master_readdata),                 //                         .readdata
 		.sdram_readdata_valid (waveform_player_0_sdram_avalon_master_readdatavalid),            //                         .readdatavalid
-		.sdram_waitrequest    (~waveform_player_0_sdram_avalon_master_waitrequest)              //                         .waitrequest_n
+		.sdram_waitrequest    (waveform_player_0_sdram_avalon_master_waitrequest)               //                         .waitrequest
 	);
 
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (

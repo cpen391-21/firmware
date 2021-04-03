@@ -58,22 +58,12 @@ module waveform_player(
     input                         r_audio_ready
 );
 
-    // Avalon Memory-Mapped SDRAM controller connections
-assign sdram_addr = 1'b0;
-assign sdram_byteenable_n = 1'b0;
-assign sdram_chipselect = 1'b1;
-assign sdram_writedata = 1'b0;
-assign sdram_read_n = 1'b1;
-assign sdram_write_n = 1'b1;
 
-// Currently unsafe. Doublesync this as well.
+// Avalon Memory-Mapped Slave controller (50MHz FSM) ================
 logic [31:0] max_audio_index;
 logic start;
 
 initial start = 0;
-
-initial l_audio_data = 0;
-initial r_audio_data = 0;
 
 always_ff @(posedge clock) begin
     if (reset_n == 0) begin
@@ -92,62 +82,122 @@ always_ff @(posedge clock) begin
     end
 end
 
-logic start_sync;
 
-doublesync doublesync_inst(
+// Inputs to 12MHz FSM from 50MHz FSM ===============================
+logic        start_sync;
+
+doublesync d0(
     .indata(start),
     .outdata(start_sync),
     .clk(audio_clock),
     .reset(audio_reset)
 );
 
-parameter WAITING       = 3'b000;
-parameter WRITE_AUDIO   = 3'b001;
-parameter UPDATE_SAMPLE = 3'b010;
+logic [31:0] max_index_sync;
 
-logic [2:0] state;
+doublesync #(.WIDTH(32)) d1(
+    .indata(max_audio_index),
+    .outdata(max_index_sync),
+    .clk(audio_clock),
+    .reset(audio_reset)
+);
 
-initial state = WAITING;
+// Syncronization and control of SDRAM module from 12MHz FSM ========
+logic [25:0] sdram_address;
+logic request;
+logic done;
+logic [15:0] readdata;
 
-assign l_audio_valid = state[0];
-assign r_audio_valid = state[0];
+sdram_reader sdram_reader_inst(
+    .clock_50(clock),
+    .reset_50(~reset_n),
 
-logic [31:0] audio_index;
-initial audio_index = 1;
+    .sdram_addr(sdram_addr),
+    .sdram_byteenable_n(sdram_byteenable_n),
+    .sdram_chipselect(sdram_chipselect),
+    .sdram_writedata(sdram_writedata),
+    .sdram_read_n(sdram_read_n),
+    .sdram_write_n(sdram_write_n),
+
+    .sdram_readdata(sdram_readdata),
+    .sdram_readdata_valid(sdram_readdata_valid),
+    .sdram_waitrequest(sdram_waitrequest),
+
+    .clock_12(audio_clock),
+    .reset_12(audio_reset),
+    .address_12(sdram_address),
+    .request_12(request),
+    .done_12(done),
+    .readdata_12(readdata)
+);
+
+
+
+// 12MHz FSM ========================================================
+enum {IDLE, WRITE_AUDIO, UPDATE_INDEX, SDRAM_REQ, SDRAM_DELAY,
+      SDRAM_WAIT} state;
+
+initial state = UPDATE_INDEX;
+
+initial sdram_address = 0;
 
 always_ff @(posedge audio_clock) begin
 
-  if (audio_reset == 1) begin
-      l_audio_data <= 0;
-      r_audio_data <= 0;
-      audio_index  <= 0;
-  end
-
   // If we have not received the start flag from the waveform_player's slave
   // interface, we do nothing!
-  else if (!start_sync) begin
-      audio_index <= 0;
-      state <= WAITING;
+  if (audio_reset == 1 || !start_sync) begin
+      l_audio_valid <= 0;
+      r_audio_valid <= 0;
+
+      request <= 0;
+
+      sdram_address  <= 0;
+
+      state <= UPDATE_INDEX;
   end
 
   else case (state)
-      WAITING: if (l_audio_ready && r_audio_ready) state <= WRITE_AUDIO;
 
-      WRITE_AUDIO: state <= UPDATE_SAMPLE;
+    IDLE: if (l_audio_ready && r_audio_ready) begin
+        l_audio_valid <= 1;
+        r_audio_valid <= 1;
+        state <= WRITE_AUDIO;
+    end
 
-      UPDATE_SAMPLE: begin
-          if (audio_index+1 >= max_audio_index) begin
-              audio_index <= 0;
-              l_audio_data <= ~l_audio_data;
-              r_audio_data <= ~r_audio_data;
-          end
+    WRITE_AUDIO: begin
+      l_audio_valid <= 0;
+      r_audio_valid <= 0;
+      state <= UPDATE_INDEX;
+    end
 
-          else begin
-              audio_index <= audio_index + 1'b1;
-          end
-
-          state <= WAITING;
+    UPDATE_INDEX: begin
+      if (sdram_address+1 >= max_index_sync) begin
+        sdram_address <= 0;
       end
+
+      else begin
+        sdram_address <= sdram_address + 1'b1;
+      end
+
+      state <= SDRAM_REQ;
+      request <= 1;
+    end
+
+    SDRAM_REQ: begin
+      state <= SDRAM_DELAY;
+      request <= 0;
+    end
+
+    // One clock delay so done variable
+    // has time to initialize past the doublesync
+    SDRAM_DELAY: state <= SDRAM_WAIT;
+
+    SDRAM_WAIT: if (done) begin
+      l_audio_data <= readdata;
+      r_audio_data <= readdata;
+      state <= IDLE;
+    end
+
   endcase
 
 end
