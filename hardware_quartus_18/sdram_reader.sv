@@ -99,7 +99,7 @@ case (state)
     WAIT_DATA_VALID: if (sdram_readdata_valid) begin
         state <= DONE;
         done <= 1;
-        readdata <= sdram_readdata; // METASTABLE!
+        readdata <= sdram_readdata;
     end
 
     DONE: if (done_cycles + 1 == max_done_cycles) begin

@@ -19,6 +19,8 @@
 #include "waveform_player.h"
 #include "sdram.h"
 
+#define pi 3.141592653589793238
+
 extern Switches switches;
 extern RS232 bluetooth;
 extern WaveformPlayer waveformplayer;
@@ -75,5 +77,14 @@ void mono_bt_player(void);
 // Write to the SDRAM and read back the data.
 void test_sdram(void);
 
+// Write to the SDRAM and read back the data.
+// Once this is done, start up the waveform player
+// to verify that this data is being seen
+// from the waveform player!
+void test_sdram_waveform_player(void);
+
+// This is how the HW accelerator is meant to work in real life.
+// Load data into it, and push play. You're good to go!
+void sine_wave_waveform_player(void);
 
 #endif /* TESTS_H_ */
