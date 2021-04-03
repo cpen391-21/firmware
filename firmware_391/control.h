@@ -15,12 +15,25 @@
 
 #define STREAM_BUF_LEN  4096
 #define READ_BUF_LEN    4096
-enum state{
-    IDLE, // not outputting anything (possibly loading)
-    PLAY_DC,
-    PLAY_SINE,
-    PLAY_CUSTOM
-    };
+#define PARSE_BUF_LEN   4096
+
+#define STREAM_TIMEOUT  5
+
+#define PREFIX          "BT+"
+#define PREFIX_LEN      3
+#define TERMINATION     '\r'
+
+enum command {START, STP, STREAM};
+/* what the parser expects for the next part of the in progress command: 
+* PREF: rest of prefix
+* CMD: rest of command text (start, stop)
+* PARAM1A: pre-decimal part of param1
+* PARAM1B: post-decimal part of param1
+* etc for params 2 and 3
+* parser is also looking for termoination character, commas or periods
+*/
+enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B}
+
 
 class control{
     private:
@@ -31,11 +44,26 @@ class control{
         SDRAM                   sdram(0xC0000000);
         Parser                  parser(&bluetooth);
 
-        state curr_state;
+        bt_command last_command;
+        bt_command in_progress;
 
-        int stream_audio();
+
+        char read_buf[READ_BUF_LEN];
+        char parse_buf[PARSE_BUF_LEN];
+        unsigned int parse_buf_i;
+        unsigned int cmd_start;
+
+        bool playing;
+        int stream_audio(char* initial, unsigned int len);
 
     public:
         control();
         int commence();
 }
+
+struct bt_command{
+    command cmd;
+    double param1;
+    double param2;
+    double param3;
+};
