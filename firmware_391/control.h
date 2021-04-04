@@ -53,13 +53,13 @@ class control{
 
         bt_command command;
         char read_buf[READ_BUF_LEN];
-        struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
         unsigned int cmd_start;
         bool playing;
     public:
         control();
         int commence();
         int execute_cmd(struct bt_command cmd);
+        struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 };
 
 #endif
