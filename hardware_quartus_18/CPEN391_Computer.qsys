@@ -1346,11 +1346,7 @@
    name="waveform_player_0"
    kind="waveform_player"
    version="2.0"
-   enabled="1">
-  <parameter name="UPDATE_SAMPLE" value="2" />
-  <parameter name="WAITING" value="0" />
-  <parameter name="WRITE_AUDIO" value="1" />
- </module>
+   enabled="1" />
  <connection
    kind="avalon"
    version="18.1"
