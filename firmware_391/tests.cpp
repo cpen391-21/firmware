@@ -260,4 +260,66 @@ void test_sdram(void) {
 	}
 }
 
+void test_sdram_waveform_player(void) {
 
+	int len = 1024;
+
+	waveformplayer.stop();
+
+	// Test correct read and write to SDRAM from ARM
+	for (unsigned int i = 0; i < len; i++) {
+		sdram.put(i, i*2);
+	}
+
+	for (unsigned int i = 0; i < len; i++) {
+		short d = sdram.get(i);
+		if (d != (short)(i*2)) {
+			printf("Error at %d: Val: %d (should be %d)", i, d, (short)(i*2));
+		}
+	}
+
+	// Now load a square wave
+	for (unsigned int i = 0; i < len; i++) {
+		if (i % 8 > 3) {
+			sdram.put(i, 0xFFFF);
+		} else {
+			sdram.put(i, 0);
+		}
+	}
+
+	waveformplayer.setlen(len);
+	waveformplayer.start();
+
+}
+
+void sine_wave_waveform_player(void) {
+
+	while (1) {
+		if (switches.newval()) {
+
+			unsigned int freq = switches.get();
+
+			waveformplayer.stop();
+
+			freq = freq << 4; //no use to have waves < 20hz
+
+			printf("New frequency: %d Hz\n", freq);
+
+			unsigned int len = 48000 * 1000 / freq;
+
+			if (freq > 0) {
+
+				for(unsigned int i = 0; i < len; i++) {
+					sdram.put(i, ((short)(0xFFFF * sin(2*pi*i*freq/48000))) & 0xFFFF);
+					//printf("%04x, %f\n", (short)(0xFFFF * sin(2*pi*i*freq/48000)), 2*pi*i*freq/48000);
+				}
+
+				printf("Data loaded into SDRAM\n");
+
+				waveformplayer.setlen(len);
+				waveformplayer.start();
+			}
+		}
+	}
+
+}

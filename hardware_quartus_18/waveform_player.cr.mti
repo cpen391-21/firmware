@@ -1,4 +1,48 @@
-C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.v {1 {vlog -work work -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.v
+C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/sdram_reader.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/sdram_reader.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module sdram_reader
+
+Top level modules:
+	sdram_reader
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_doublesync.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_doublesync.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module doublesync_tb
+
+Top level modules:
+	doublesync_tb
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_sdram_reader.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_sdram_reader.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module tb_sdram_reader
+
+Top level modules:
+	tb_sdram_reader
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_waveform_player_sdram.sv {2 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_waveform_player_sdram.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module tb_waveform_player
+** Warning: C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_waveform_player_sdram.sv(39): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+
+
+Top level modules:
+	tb_waveform_player
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/waveform_player.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/waveform_player.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module waveform_player
+
+Top level modules:
+	waveform_player
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_waveform_player_master.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/tb_waveform_player_master.sv
+Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
+-- Compiling module tb_waveform_player
+
+Top level modules:
+	tb_waveform_player
+
+} {} {}} C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.sv {1 {vlog -work work -sv -stats=none C:/Users/Tyler/Documents/CPEN391/firmware/hardware_quartus_18/doublesync.sv
 Model Technology ModelSim ALTERA vlog 10.3c Compiler 2014.09 Sep 20 2014
 -- Compiling module doublesync
 
