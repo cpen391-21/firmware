@@ -14,58 +14,8 @@
 
 #define STREAM_BUF_LEN  4096
 #define READ_BUF_LEN    4096
-#define PARSE_BUF_LEN   4096
 
 #define STREAM_TIMEOUT  5
-
-#define PREFIX          "EN+"
-#define PREFIX_LEN      3
-#define TERMINATION     '\n'
-
-#define NUM_COMMANDS    7
-#define MAX_CMD_LEN     16
-
-#define CMD_IN_PROG     -1
-#define INVALID_PREF    -2
-#define INVALID_CMD     -3
-
-enum command_t {
-    NEW_WAVE,
-    ADD_SINE,
-    ADD_RANDOM,
-    ADD_SQUARE,
-    ADD_OFFSET,
-    START_WAVE,
-    STOP_WAVE
-};
-
-char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
-    "NEW_WAVE",
-    "ADD_SINE",
-    "ADD_RANDOM",
-    "ADD_SQUARE",
-    "ADD_OFFSET",
-    "START_WAVE",
-    "STOP_WAVE"
-};
-
-
-/* what the parser expects for the next part of the in progress command: 
-* PREF: rest of prefix
-* CMD: rest of command text (start, stop)
-* PARAM1A: pre-decimal part of param1
-* PARAM1B: post-decimal part of param1
-* etc for params 2 and 3
-* parser is also looking for termoination character, commas or periods
-*/
-enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B, GIB};
-
-struct bt_command{
-    command_t cmd;
-    double param1;
-    double param2;
-    double param3;
-};
 
 #define WAVEFORM_ARRAY_SIZE 32
 
@@ -102,31 +52,17 @@ struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 
 class control{
     private:
-        void reset_bt_parser();
         int stream_audio(char* initial, unsigned int len);
-        bt_command last_command;
 
-        bt_command in_progress;
-
-        command_part state;
+        bt_command command;
 
         char read_buf[READ_BUF_LEN];
-        char parse_buf[PARSE_BUF_LEN];
-        unsigned int parse_buf_i;
         unsigned int cmd_start;
         bool playing;
     public:
         control();
         int commence();
         int execute_cmd(struct bt_command cmd);
-        int check_cmd_str(char* str, unsigned int start, unsigned int len);
-        int parse_bluetooth(char c);
 };
-
-
-/* 
-* returns the int value for a single digit char or -1 for a period or -2 for neither
-*/
-int char_to_int(char c);
 
 #endif

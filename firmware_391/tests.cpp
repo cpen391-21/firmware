@@ -94,21 +94,6 @@ void test_bluetooth(void){
     }
 }
 
-void test_parser(void) {
-	int len;
-	char *data;
-	Parser parser(&bluetooth);
-
-	while (1) {
-		len = parser.getdata(&data);
-		/*if(len) {
-			for (int i = 0; i < len; i++) {
-				printf("%c", data[i]);
-			}
-		}*/
-	}
-}
-
 int compare_string_start(const char *s1, const char *s2) {
 	for (; *s1 == *s2; s1++, s2++) {};
 
@@ -199,11 +184,13 @@ void mono_bt_player(void) {
 
         // parser will not return until a message is delivered.
         // It's important to check if there is a message or it will interrupt our data.
+		/*
 		if (parser.startflag()) {
 			len = parser.getdata(&data);
 		} else {
 			len = 0;
 		}
+		*/
 
 		if(len) {
 			if(!compare_string_start(data, data_keyword)) {
@@ -323,3 +310,20 @@ void sine_wave_waveform_player(void) {
 	}
 
 }
+
+/*
+void test_parser(void) {
+	int len;
+	char *data;
+	Parser parser(&bluetooth);
+
+	while (1) {
+		len = parser.getdata(&data);
+		*//*if(len) {
+			for (int i = 0; i < len; i++) {
+				printf("%c", data[i]);
+			}
+		}*//*
+	}
+}
+*/
