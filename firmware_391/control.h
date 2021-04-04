@@ -1,6 +1,5 @@
 #ifndef CONTROL_H
 #define CONTROL_H
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,14 +60,22 @@ char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
 */
 enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B, GIB};
 
-enum waveform_t {sine, random, square, triangle, offset};
-
 struct bt_command{
     command_t cmd;
     double param1;
     double param2;
     double param3;
 };
+
+#define WAVEFORM_ARRAY_SIZE 32
+
+typedef enum {
+    sine,
+    random,
+    square,
+    triangle,
+    offset
+} waveform_t;
 
 // For sine, random, square
 struct periodic_command {
@@ -85,10 +92,12 @@ struct waveform_element {
 	waveform_t type;
 	
 	union {
-		struct periodic_command;
-		struct simple_command;
+		struct periodic_command periodic;
+		struct simple_command simple;
     };
 };	
+
+struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 
 
 class control{
@@ -119,3 +128,5 @@ class control{
 * returns the int value for a single digit char or -1 for a period or -2 for neither
 */
 int char_to_int(char c);
+
+#endif
