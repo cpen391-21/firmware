@@ -60,9 +60,18 @@ int control::commence(){
     char data[READ_BUF_LEN];
     unsigned int data_len;
 
+    int parse_result;
+
     while(true){
         data_len = this->parser.get_data(&data); // start every 
-        if (data_len == 0){
+        if (data_len > 0){
+            for(unsigned int i = 0; i < data_len; i++){
+                parse_result = this->parse_bluetooth(data[i]);
+                if (parse_result < 0) continue;
+                this->execute_command(this->last_command);
+            }
+        }
+        else {
             if (this->playing){
                 // TODO: check for stop command in switches
                 continue;
@@ -71,9 +80,6 @@ int control::commence(){
                 // TODO: maybe add switch input?
                 continue;
             }
-        }
-        else {
-            
         }
 
         // TODO check datagram for commands
@@ -102,11 +108,12 @@ int control::parse_bluetooth(char c){
             cmd_id = INVALID_PREF;
         }
         else if (this->command_part == CMD){ // terminating without params
-            cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN)
+            cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
         }
         else { // terminated with some params added
             cmd_id = (int) this->in_progress.cmd;
         }
+        if (cmd_id >= 0) this->last_command = this->in_progress;
         this->reset_bt_parser();
         return cmd_id;
     }

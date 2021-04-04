@@ -79,7 +79,7 @@ struct periodic_command {
 
 struct simple_command {
 	double amplitude;
-}
+};
 
 struct waveform_element {
 	waveform_t type;
@@ -87,8 +87,8 @@ struct waveform_element {
 	union {
 		struct periodic_command;
 		struct simple_command;
-}
-}	
+    };
+};	
 
 
 class control{
@@ -115,6 +115,9 @@ class control{
     public:
         control();
         int commence();
+        int execute_cmd(struct command cmd);
+        int check_cmd_str(char* str, unsigned int start, unsigned int len);
+        int parse_bluetooth(char c);
 }
 
 
