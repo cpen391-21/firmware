@@ -1,6 +1,6 @@
 #ifndef CONTROL_H
 #define CONTROL_H
-
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +40,7 @@ enum command_t {
     STOP_WAVE
 };
 
-char command_strs[NUM_COMMANDS][MAX_CMD_LEN] {
+char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
     "NEW_WAVE",
     "ADD_SINE",
     "ADD_RANDOM",
@@ -59,9 +59,9 @@ char command_strs[NUM_COMMANDS][MAX_CMD_LEN] {
 * etc for params 2 and 3
 * parser is also looking for termoination character, commas or periods
 */
-enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B, GIB}
+enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B, GIB};
 
-enum waveform_t {sine, random, square, triangle, offset}
+enum waveform_t {sine, random, square, triangle, offset};
 
 struct bt_command{
     command_t cmd;
@@ -93,32 +93,26 @@ struct waveform_element {
 
 class control{
     private:
-        Switches             switches(0xFF200000);
-        RS232               bluetooth(0xFF200080);
-        // RS232                    wifi(0xFF200088);
-        WaveformPlayer waveformplayer(0xFF200090);
-        SDRAM                   sdram(0xC0000000);
-        Parser                  parser(&bluetooth);
-
+        void reset_bt_parser();
+        int stream_audio(char* initial, unsigned int len);
         bt_command last_command;
+
         bt_command in_progress;
 
+        command_part state;
 
         char read_buf[READ_BUF_LEN];
         char parse_buf[PARSE_BUF_LEN];
         unsigned int parse_buf_i;
         unsigned int cmd_start;
-
         bool playing;
-        int stream_audio(char* initial, unsigned int len);
-
     public:
         control();
         int commence();
-        int execute_cmd(struct command cmd);
+        int execute_cmd(struct bt_command cmd);
         int check_cmd_str(char* str, unsigned int start, unsigned int len);
         int parse_bluetooth(char c);
-}
+};
 
 
 /* 

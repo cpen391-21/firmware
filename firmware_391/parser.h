@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdint.h>
 #include "rs232.h"
 
 #define STARTFLAG 0x40
