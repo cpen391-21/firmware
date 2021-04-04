@@ -22,6 +22,8 @@ int control::commence(){
         parse_result = parser.parse_bluetooth(&(this->command));
         if (parse_result >= 0){
             this->execute_cmd(this->command);
+            // struct waveform_element el = {.type = sine, .periodic = {.freq = 40, .amplitude = 1, .offset = 90}};
+            // waveforms[i++] = el;
         }
         else {
             if (this->playing){

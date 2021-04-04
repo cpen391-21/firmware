@@ -47,16 +47,13 @@ struct waveform_element {
     };
 };	
 
-struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
-
-
 class control{
     private:
         int stream_audio(char* initial, unsigned int len);
 
         bt_command command;
-
         char read_buf[READ_BUF_LEN];
+        struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
         unsigned int cmd_start;
         bool playing;
     public:
