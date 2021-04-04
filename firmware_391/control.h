@@ -23,7 +23,33 @@
 #define PREFIX_LEN      3
 #define TERMINATION     '\r'
 
-enum command {START, STP, STREAM};
+#define NUM_COMMANDS    7
+#define MAX_CMD_LEN     16
+
+#define CMD_IN_PROG     -1
+#define INVALID_PREF    -2
+#define INVALID_CMD     -3
+
+enum command_t {
+    NEW_WAVE,
+    ADD_SINE,
+    ADD_RANDOM,
+    ADD_SQUARE,
+    ADD_OFFSET,
+    START_WAVE,
+    STOP_WAVE
+};
+
+char command_strs[NUM_COMMANDS][MAX_CMD_LEN] {
+    "NEW_WAVE",
+    "ADD_SINE",
+    "ADD_RANDOM",
+    "ADD_SQUARE",
+    "ADD_OFFSET",
+    "START_WAVE",
+    "STOP_WAVE"
+};
+
 
 /* what the parser expects for the next part of the in progress command: 
 * PREF: rest of prefix
@@ -33,7 +59,36 @@ enum command {START, STP, STREAM};
 * etc for params 2 and 3
 * parser is also looking for termoination character, commas or periods
 */
-enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B}
+enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3B, GIB}
+
+enum waveform_t {sine, random, square, triangle, offset}
+
+struct bt_command{
+    command_t cmd;
+    double param1;
+    double param2;
+    double param3;
+};
+
+// For sine, random, square
+struct periodic_command {
+	double freq;
+	double amplitude;
+	double offset;
+};
+
+struct simple_command {
+	double amplitude;
+}
+
+struct waveform_element {
+	waveform_t type;
+	
+	union {
+		struct periodic_command;
+		struct simple_command;
+}
+}	
 
 
 class control{
@@ -62,9 +117,8 @@ class control{
         int commence();
 }
 
-struct bt_command{
-    command cmd;
-    double param1;
-    double param2;
-    double param3;
-};
+
+/* 
+* returns the int value for a single digit char or -1 for a period or -2 for neither
+*/
+int char_to_int(char c);
