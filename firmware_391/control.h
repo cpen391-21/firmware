@@ -20,7 +20,7 @@
 
 #define PREFIX          "EN+"
 #define PREFIX_LEN      3
-#define TERMINATION     '\r'
+#define TERMINATION     '\n'
 
 #define NUM_COMMANDS    7
 #define MAX_CMD_LEN     16
@@ -71,7 +71,7 @@ struct bt_command{
 
 typedef enum {
     sine,
-    random,
+    noise,
     square,
     triangle,
     offset
