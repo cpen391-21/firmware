@@ -7,7 +7,6 @@
 
 #include "audio.h"
 #include "rs232.h"
-#include "parser.h"
 #include "switches.h"
 #include "waveform_player.h"
 #include "sdram.h"
@@ -20,12 +19,32 @@
 #define WAVEFORM_ARRAY_SIZE 32
 
 typedef enum {
+    NEW_WAVE,
+    ADD_SINE,
+    ADD_RANDOM,
+    ADD_SQUARE,
+    ADD_OFFSET,
+    START_WAVE,
+    STOP_WAVE,
+    PAUSE,
+    RESUME,
+    DURATION
+} command_t;
+
+typedef enum {
     sine,
     noise,
     square,
     triangle,
     offset
 } waveform_t;
+
+struct bt_command{
+    command_t cmd;
+    double param1;
+    double param2;
+    double param3;
+};
 
 // For sine, random, square
 struct periodic_command {
@@ -59,7 +78,9 @@ class control{
         control();
         int commence();
         int execute_cmd(struct bt_command cmd);
+        double duration;
         struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
+        unsigned int waveforms_i;
 };
 
 #endif

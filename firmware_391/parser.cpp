@@ -12,7 +12,10 @@ char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
     "ADD_SQUARE",
     "ADD_OFFSET",
     "START_WAVE",
-    "STOP_WAVE"
+    "STOP_WAVE",
+    "PAUSE",
+    "RESUME",
+    "DURATION?"
 };
 
 Parser::Parser(RS232 *rs232) {

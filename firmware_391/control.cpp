@@ -1,4 +1,5 @@
 #include "control.h"
+#include "parser.h"
 #include <time.h> 
 
 Switches             switches(0xFF200000);
@@ -10,12 +11,12 @@ Parser                  parser(&bluetooth);
 
 control::control(){
     this->playing = false;
+    this->duration = 0.0;
     parser.reset_bt_parser();
 }
 
 
 int control::commence(){
-    char* data;
     int parse_result;
 
     while(true){
@@ -40,7 +41,31 @@ int control::commence(){
 
 
 int control::execute_cmd(struct bt_command cmd){
-    switch(cmd.cmd) {
+    switch(cmd.cmd) {/*
+        case NEW_WAVE:
+            this->duration = cmd.param1;
+            // TODO clean elements array
+            break;
+        case ADD_SINE:
+            struct waveform_element wf_element = {.type = sine, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
+            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
+            break;
+        case ADD_RANDOM:
+            struct waveform_element wf_element = {.type = noise, .simple = {.amplitude = cmd.param1}};
+            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
+            break;
+        case ADD_SQUARE:
+            struct waveform_element wf_element = {.type = square, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
+            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
+            break;
+        case ADD_TRIANGLE:
+            struct waveform_element wf_element = {.type = triangle, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
+            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
+            break;*/
         default: break;
     }
 
