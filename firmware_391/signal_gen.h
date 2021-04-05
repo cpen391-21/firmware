@@ -24,7 +24,7 @@ class SignalGen {
 		static int round(double val);
     public:
         static short getvalue(struct waveform_element *el, unsigned int i);
-        static void write_waveforms(struct waveform_element *arr, SDRAM *sdram);
+        static void write_waveforms(struct waveform_element *arr, SDRAM *sdram, unsigned int n);
 };
 
 #endif /* SIGNAL_GEN_H */

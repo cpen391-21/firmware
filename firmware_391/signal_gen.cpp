@@ -50,14 +50,14 @@ int SignalGen::round(double val) {
     return (val > 0.0) ? std::floor(val + 0.5) : std::ceil(val - 0.5);
 }
 
-void SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdram) {
+void SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdram, unsigned int n) {
     double min_freq = DBL_MAX;
     double product_freq = 1;
 
     struct waveform_element *minsize = arr;
 
     // Firstly get the minimum frequency.
-    for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
+    for (int i = 0; i < n; i++) {
         if (minsize->type == sine ||
             minsize->type == square ||
             minsize->type == triangle) {
