@@ -27,6 +27,7 @@ Parser::Parser(RS232 *rs232) {
 * resets all parser memory. Must be done for every command
 */
 void Parser::reset_bt_parser(){
+    // TODO move prev command to another buffer for echoing
     this->parse_buf_i = 0;
     this->state = PREF;
     this->in_progress.param1 = 0.0;
@@ -72,7 +73,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
         return cmd_id;
     }
 
-    switch(this->state){
+    switch(this->state){ // state machine parsing
         case PREF:
             if (c == PREFIX[this->parse_buf_i]) {
                 this->parse_buf[this->parse_buf_i] = c;
@@ -115,7 +116,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param1 += (double) chr_int / parse_denom;
+                this->in_progress.param1 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = PARAM2A;
@@ -140,7 +141,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param2 += (double) chr_int / parse_denom;
+                this->in_progress.param2 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = PARAM3A;
@@ -164,7 +165,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param3 += (double) chr_int / parse_denom;
+                this->in_progress.param3 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = GIB;
