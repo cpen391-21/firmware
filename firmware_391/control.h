@@ -10,6 +10,7 @@
 #include "switches.h"
 #include "waveform_player.h"
 #include "sdram.h"
+#include "signal_gen.h"
 
 #define STREAM_BUF_LEN  4096
 #define READ_BUF_LEN    4096

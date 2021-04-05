@@ -1,6 +1,7 @@
 #include "control.h"
 #include "parser.h"
-#include <time.h> 
+#include "signal_gen.h"
+#include <time.h>
 
 Parser                  parser(&bluetooth);
 
@@ -57,12 +58,17 @@ int control::execute_cmd(struct bt_command cmd){
         case ADD_OFFSET:
             break;
         case START_WAVE:
+            SignalGen::write_waveforms(this->waveforms, &sdram);
+            waveformplayer.start();
             break;
         case STOP_WAVE:
+            waveformplayer.stop();
             break;
         case PAUSE:
+            waveformplayer.stop();
             break;
         case RESUME:
+            waveformplayer.start();
             break;
         case DURATION:
             break;
