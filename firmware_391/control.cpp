@@ -54,6 +54,18 @@ int control::execute_cmd(struct bt_command cmd){
             this->waveforms[this->waveforms_i] = this->assign_periodic(triangle, cmd.param1, cmd.param2, 0);
             this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
             break;
+        case ADD_OFFSET:
+            break;
+        case START_WAVE:
+            break;
+        case STOP_WAVE:
+            break;
+        case PAUSE:
+            break;
+        case RESUME:
+            break;
+        case DURATION:
+            break;
         default: break;
     }
 
