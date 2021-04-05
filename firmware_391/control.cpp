@@ -11,24 +11,20 @@ control::control(){
     parser.reset_bt_parser();
 }
 
+/*
+* constantly looping executing commands
+*/
 int control::commence(){
     int parse_result;
-
-    clock_t curr;
-
-    while(true){
-        curr = clock();
-        if (this->playing) {
-            elapsed += curr - this->last_clock;
-        }
-        if (this->elapsed >= this->duration) {
+    while(true){ // always loop
+        if (!this->update_timer()) {
             this->stop_player();
         }
-
-        parse_result = parser.parse_bluetooth(&(this->command));
+        parse_result = parser.increment_parser(&(this->command)); // increment parser and if a command is produced, execute it
         if (parse_result >= 0){
             this->execute_cmd(this->command);
         }
+        /*
         else {
             if (this->playing){
                 // TODO: check for stop command in switches
@@ -39,10 +35,13 @@ int control::commence(){
                 continue;
             }
         }
+        */
     }
 }
 
-
+/*
+* simple switch statement to route commands
+*/
 int control::execute_cmd(struct bt_command cmd){
     switch(cmd.cmd) {
         case NEW_WAVE:
@@ -89,6 +88,9 @@ int control::execute_cmd(struct bt_command cmd){
     return -1;
 }
 
+/*
+* takes in components and makes a waveform_element out of them
+*/
 struct waveform_element control::assign_periodic(waveform_t type, double freq, double amplitude, double offset) {
     struct waveform_element wf_element;
     wf_element.type = type;
@@ -99,6 +101,9 @@ struct waveform_element control::assign_periodic(waveform_t type, double freq, d
     return wf_element;
 }
 
+/*
+* takes in components and makes a waveform_element out of them
+*/
 struct waveform_element control::assign_simple(waveform_t type, double amplitude) {
     struct waveform_element wf_element;
     wf_element.type = type;
@@ -107,8 +112,11 @@ struct waveform_element control::assign_simple(waveform_t type, double amplitude
     return wf_element;
 }
 
+/*
+* starts player with timeout protection and keeps track of playing status and time
+*/
 bool control::start_player() {
-    if (this->elapsed < this->duration) {
+    if (this->update_timer()) {
         waveformplayer.start();
         this->playing = true;
         return true;
@@ -118,9 +126,27 @@ bool control::start_player() {
     return false;
 }
 
+/*
+* stops player and updates playing status and time
+*/
 void control::stop_player() {
     waveformplayer.stop();
     this->playing = false;
+}
+
+/*
+* changes the values of elapsed to represent time elapsed playing.
+* needs to be called often for acurrate timeout/duration control
+*/
+bool control::update_timer() {
+    clock_t curr;
+    curr = clock();
+    if (this->playing) {
+        this->elapsed += curr - this->last_clock;
+    }
+    this->last_clock = curr;
+
+    return this->elapsed < this->duration; // true if we still have time left
 }
 
 /*

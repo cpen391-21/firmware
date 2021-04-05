@@ -76,9 +76,20 @@ struct waveform_element {
 
 class control{
     private:
-        int stream_audio(char* initial, unsigned int len);
+        /*
+        * start player (with timeout check)
+        */
         bool start_player();
+
+        /*
+        * stop player and update playing tracking
+        */ 
         void stop_player();
+
+        /*
+        * updates duration and returns whether or not we still have time left (bool)
+        */ 
+        bool update_timer();
 
         bt_command command;
         char read_buf[READ_BUF_LEN];
@@ -86,15 +97,32 @@ class control{
         bool playing;
 
         // time values in seconds
-        clock_t duration;
-        clock_t elapsed;
+        clock_t duration; // given duration
+        clock_t elapsed; // time elapsed treating
+        clock_t last_clock; // last time measured
 
-        clock_t last_clock;
+        int stream_audio(char* initial, unsigned int len);
     public:
         control();
+        /*
+        * primary control loop. should run indefinitely
+        */
         int commence();
+
+        /*
+        * executes the given command once parsed. Assumes parser still
+        * has blank command text in buffer for echoing
+        */ 
         int execute_cmd(struct bt_command cmd);
+
+        /*
+        * builds a waveform_element struct with a periodic command
+        */ 
         struct waveform_element assign_periodic(waveform_t type, double freq, double amplitude, double offset);
+
+        /*
+        * builds a waveform_element struct with a simple command
+        */ 
         struct waveform_element assign_simple(waveform_t type, double amplitude);
 
         struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];

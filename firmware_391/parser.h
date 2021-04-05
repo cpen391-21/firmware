@@ -40,8 +40,26 @@ class Parser {
         unsigned int parse_buf_i;
     public:
         Parser(RS232 *rs232);
+
+        /*
+        * checks the given string and returns its command ID or -1 if it's not a command
+        */
         int check_cmd_str(char* str, unsigned int start, unsigned int len);
-        int parse_bluetooth(bt_command *cmd);
+
+        /*
+        * 'increments' parser by getting one char from bluetooth if possibe and parsing it
+        */
+        int increment_parser(bt_command *cmd);
+
+        /*
+        * parses a char. result will be >= 0 if a command is put in cmd or <0 otherwise
+        * check error/progress codes above
+        */
+        int parse_bluetooth_char(char c, bt_command *cmd);
+
+        /*
+        * clears out parser
+        */ 
         void reset_bt_parser();
 };
 

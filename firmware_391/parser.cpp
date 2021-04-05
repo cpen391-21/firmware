@@ -23,6 +23,9 @@ Parser::Parser(RS232 *rs232) {
     this->rs232 = rs232;
 }
 
+/*
+* resets all parser memory. Must be done for every command
+*/
 void Parser::reset_bt_parser(){
     this->parse_buf_i = 0;
     this->state = PREF;
@@ -31,19 +34,27 @@ void Parser::reset_bt_parser(){
     this->in_progress.param3 = 0.0;
 }
 
-int Parser::parse_bluetooth(bt_command *cmd){
-    static unsigned int parse_denom = 1;
-    int chr_int;
-    int cmd_id;
-
+/*
+* checks if there's a char waiting and if so, calls parse_bluetooth_char
+*/
+int Parser::increment_parser(bt_command *cmd){
     char c;
     if (rs232->read_fifo_size()){
         rs232->getchar(&c);
+        return this->parse_bluetooth_char(c, cmd);
     }
     else {
         return NO_CHAR;
     }
-    
+}
+
+/*
+* parses a single char for commands
+*/
+int Parser::parse_bluetooth_char(char c, bt_command *cmd){
+    static unsigned int parse_denom = 1;
+    int chr_int;
+    int cmd_id;
 
     if (c == TERMINATION) { // end of message found
         this->parse_buf[this->parse_buf_i] = c;
