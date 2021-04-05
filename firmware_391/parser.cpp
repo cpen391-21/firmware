@@ -8,6 +8,7 @@
 char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
     "NEW_WAVE",
     "ADD_SINE",
+    "ADD_TRIANGLE",
     "ADD_RANDOM",
     "ADD_SQUARE",
     "ADD_OFFSET",

@@ -17,8 +17,6 @@ int control::commence(){
         parse_result = parser.parse_bluetooth(&(this->command));
         if (parse_result >= 0){
             this->execute_cmd(this->command);
-            // struct waveform_element el = {.type = sine, .periodic = {.freq = 40, .amplitude = 1, .offset = 90}};
-            // waveforms[i++] = el;
         }
         else {
             if (this->playing){
@@ -35,35 +33,49 @@ int control::commence(){
 
 
 int control::execute_cmd(struct bt_command cmd){
-    switch(cmd.cmd) {/*
+    switch(cmd.cmd) {
         case NEW_WAVE:
             this->duration = cmd.param1;
             // TODO clean elements array
             break;
         case ADD_SINE:
-            struct waveform_element wf_element = {.type = sine, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
-            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms[this->waveforms_i] = this->assign_periodic(sine, cmd.param1, cmd.param2, 0);
             this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
             break;
         case ADD_RANDOM:
-            struct waveform_element wf_element = {.type = noise, .simple = {.amplitude = cmd.param1}};
-            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms[this->waveforms_i] = this->assign_simple(square, cmd.param1);
             this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
             break;
         case ADD_SQUARE:
-            struct waveform_element wf_element = {.type = square, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
-            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms[this->waveforms_i] = this->assign_periodic(square, cmd.param1, cmd.param2, 0);
             this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
             break;
         case ADD_TRIANGLE:
-            struct waveform_element wf_element = {.type = triangle, .periodic = {.freq = cmd.param1, .amplitude = cmd.param2, .offset = 0}};
-            this->waveforms[this->waveforms_i] = wf_element;
+            this->waveforms[this->waveforms_i] = this->assign_periodic(triangle, cmd.param1, cmd.param2, 0);
             this->waveforms_i = (this->waveforms_i + 1) % WAVEFORM_ARRAY_SIZE;
-            break;*/
+            break;
         default: break;
     }
 
     return -1;
+}
+
+struct waveform_element control::assign_periodic(waveform_t type, double freq, double amplitude, double offset) {
+    struct waveform_element wf_element;
+    wf_element.type = type;
+    wf_element.periodic.freq = freq;
+    wf_element.periodic.amplitude = amplitude;
+    wf_element.periodic.offset = offset;
+
+    return wf_element;
+}
+
+struct waveform_element control::assign_simple(waveform_t type, double amplitude) {
+    struct waveform_element wf_element;
+    wf_element.type = type;
+    wf_element.simple.amplitude = amplitude;
+
+    return wf_element;
 }
 
 

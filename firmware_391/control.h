@@ -26,6 +26,7 @@ extern SDRAM sdram;
 typedef enum {
     NEW_WAVE,
     ADD_SINE,
+    ADD_TRIANGLE,
     ADD_RANDOM,
     ADD_SQUARE,
     ADD_OFFSET,
@@ -83,6 +84,8 @@ class control{
         control();
         int commence();
         int execute_cmd(struct bt_command cmd);
+        struct waveform_element assign_periodic(waveform_t type, double freq, double amplitude, double offset);
+        struct waveform_element assign_simple(waveform_t type, double amplitude);
         double duration;
         struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
         unsigned int waveforms_i;

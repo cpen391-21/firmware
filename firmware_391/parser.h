@@ -11,7 +11,7 @@
 #define PREFIX_LEN      3
 #define TERMINATION     '\n'
 
-#define NUM_COMMANDS    10
+#define NUM_COMMANDS    11
 #define MAX_CMD_LEN     16
 
 #define CMD_IN_PROG     -1
