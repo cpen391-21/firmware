@@ -14,7 +14,17 @@ control::control(){
 int control::commence(){
     int parse_result;
 
+    clock_t curr;
+
     while(true){
+        curr = clock();
+        if (this->playing) {
+            elapsed += curr - this->last_clock;
+        }
+        if (this->elapsed >= this->duration) {
+            this->stop_player();
+        }
+
         parse_result = parser.parse_bluetooth(&(this->command));
         if (parse_result >= 0){
             this->execute_cmd(this->command);
@@ -36,7 +46,8 @@ int control::commence(){
 int control::execute_cmd(struct bt_command cmd){
     switch(cmd.cmd) {
         case NEW_WAVE:
-            this->duration = cmd.param1;
+            this->duration = (clock_t) cmd.param1;
+            this->elapsed = 0.0;
             // TODO clean elements array
             break;
         case ADD_SINE:
@@ -59,16 +70,16 @@ int control::execute_cmd(struct bt_command cmd){
             break;
         case START_WAVE:
             SignalGen::write_waveforms(this->waveforms, &sdram);
-            waveformplayer.start();
+            this->start_player();
             break;
         case STOP_WAVE:
-            waveformplayer.stop();
+            this->stop_player();
             break;
         case PAUSE:
-            waveformplayer.stop();
+            this->stop_player();
             break;
         case RESUME:
-            waveformplayer.start();
+            this->start_player();
             break;
         case DURATION:
             break;
@@ -96,6 +107,21 @@ struct waveform_element control::assign_simple(waveform_t type, double amplitude
     return wf_element;
 }
 
+bool control::start_player() {
+    if (this->elapsed < this->duration) {
+        waveformplayer.start();
+        this->playing = true;
+        return true;
+    }
+    waveformplayer.stop();
+    this->playing = false;
+    return false;
+}
+
+void control::stop_player() {
+    waveformplayer.stop();
+    this->playing = false;
+}
 
 /*
 int control::stream_audio(char* initial, unsigned int len){
