@@ -18,6 +18,11 @@
 
 #define WAVEFORM_ARRAY_SIZE 32
 
+extern Switches switches;
+extern RS232 bluetooth;
+extern WaveformPlayer waveformplayer;
+extern SDRAM sdram;
+
 typedef enum {
     NEW_WAVE,
     ADD_SINE,
