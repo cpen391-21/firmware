@@ -27,5 +27,5 @@ WaveformPlayer waveformplayer(0xFF200090);
 SDRAM                   sdram(0xC0000000);
 
 int main(void) {
-	sine_wave_waveform_player();
+	test_bt_parser();
 }

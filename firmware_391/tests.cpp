@@ -28,7 +28,7 @@ bool single_parser_test(char *str, bt_command expected) {
 	int cmd_id = -1;
 
 	for (unsigned int i = 0; str[i] != '\0'; i++) {
-		cmd_id = parse_tester.increment_parser(&result);
+		cmd_id = parse_tester.parse_bluetooth_char(str[i], &result);
 	}
 
 	return cmd_id == (int) expected.cmd &&

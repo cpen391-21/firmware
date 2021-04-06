@@ -76,9 +76,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
     switch(this->state){ // state machine parsing
         case PREF:
             if (c == PREFIX[this->parse_buf_i]) {
-                this->parse_buf[this->parse_buf_i] = c;
-                this->parse_buf_i ++;
-                if (this->parse_buf_i >= PREFIX_LEN) this->state = CMD;
+                if (this->parse_buf_i >= PREFIX_LEN - 1) this->state = CMD;
             }
             else {
                 this->reset_bt_parser();
@@ -175,10 +173,8 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
             break;
     }
 
-    if(this->state != PREF) {
-        this->parse_buf[this->parse_buf_i] = c;
-        this->parse_buf_i ++;
-    }
+    this->parse_buf[this->parse_buf_i] = c;
+    this->parse_buf_i ++;
 
     return CMD_IN_PROG; // if we've gotten to this point without returning, it means we're midway through parsing a command
 }
