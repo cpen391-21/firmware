@@ -5,7 +5,7 @@
 
 Parser                  parser(&bluetooth);
 
-control::control(){
+Control::Control(){
     this->playing = false;
     this->duration = 0.0;
     parser.reset_bt_parser();
@@ -14,7 +14,7 @@ control::control(){
 /*
 * constantly looping executing commands
 */
-int control::commence(){
+int Control::commence(){
     int parse_result;
     while(true){ // always loop
         if (!this->update_timer()) {
@@ -23,26 +23,24 @@ int control::commence(){
         parse_result = parser.increment_parser(&(this->command)); // increment parser and if a command is produced, execute it
         if (parse_result >= 0){
             this->execute_cmd(this->command);
-        }
-        /*
-        else {
-            if (this->playing){
-                // TODO: check for stop command in switches
-                continue;
+
+            /*
+            * respond to command
+            */ 
+            if(this->command.cmd == DURATION) {
+                this->send_duration_str();
             }
             else {
-                // TODO: maybe add switch input?
-                continue;
+                parser.send_str_bt(parser.parse_buf);
             }
         }
-        */
     }
 }
 
 /*
 * simple switch statement to route commands
 */
-int control::execute_cmd(struct bt_command cmd){
+int Control::execute_cmd(struct bt_command cmd){
     switch(cmd.cmd) {
         case NEW_WAVE:
             this->duration = (clock_t) cmd.param1;
@@ -91,7 +89,7 @@ int control::execute_cmd(struct bt_command cmd){
 /*
 * takes in components and makes a waveform_element out of them
 */
-struct waveform_element control::assign_periodic(waveform_t type, double freq, double amplitude, double offset) {
+struct waveform_element Control::assign_periodic(waveform_t type, double freq, double amplitude, double offset) {
     struct waveform_element wf_element;
     wf_element.type = type;
     wf_element.periodic.freq = freq;
@@ -104,7 +102,7 @@ struct waveform_element control::assign_periodic(waveform_t type, double freq, d
 /*
 * takes in components and makes a waveform_element out of them
 */
-struct waveform_element control::assign_simple(waveform_t type, double amplitude) {
+struct waveform_element Control::assign_simple(waveform_t type, double amplitude) {
     struct waveform_element wf_element;
     wf_element.type = type;
     wf_element.simple.amplitude = amplitude;
@@ -115,7 +113,7 @@ struct waveform_element control::assign_simple(waveform_t type, double amplitude
 /*
 * starts player with timeout protection and keeps track of playing status and time
 */
-bool control::start_player() {
+bool Control::start_player() {
     if (this->update_timer()) {
         waveformplayer.start();
         this->playing = true;
@@ -129,7 +127,7 @@ bool control::start_player() {
 /*
 * stops player and updates playing status and time
 */
-void control::stop_player() {
+void Control::stop_player() {
     waveformplayer.stop();
     this->playing = false;
 }
@@ -138,7 +136,7 @@ void control::stop_player() {
 * changes the values of elapsed to represent time elapsed playing.
 * needs to be called often for acurrate timeout/duration control
 */
-bool control::update_timer() {
+bool Control::update_timer() {
     clock_t curr;
     curr = clock();
     if (this->playing) {
@@ -147,6 +145,17 @@ bool control::update_timer() {
     this->last_clock = curr;
 
     return this->elapsed < this->duration; // true if we still have time left
+}
+
+int Control::send_duration_str() {
+    char msg[DUR_MSG_LEN];
+
+    clock_t remaining_clk = this->duration - this->elapsed;
+    double remaining = (double) remaining_clk;
+
+    sprintf(msg, DUR_MSG_START, remaining);
+
+    return parser.send_str_bt(msg);
 }
 
 /*

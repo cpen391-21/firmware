@@ -15,10 +15,13 @@
 
 #define STREAM_BUF_LEN  4096
 #define READ_BUF_LEN    4096
+#define DUR_MSG_LEN     64
 
 #define STREAM_TIMEOUT  5
 
 #define WAVEFORM_ARRAY_SIZE 32
+
+#define DUR_MSG_START   "EN+DURATION=%.2f\n"
 
 extern Switches switches;
 extern RS232 bluetooth;
@@ -74,7 +77,7 @@ struct waveform_element {
     };
 };	
 
-class control{
+class Control{
     private:
         /*
         * start player (with timeout check)
@@ -103,7 +106,7 @@ class control{
 
         int stream_audio(char* initial, unsigned int len);
     public:
-        control();
+        Control();
         /*
         * primary control loop. should run indefinitely
         */
@@ -124,6 +127,11 @@ class control{
         * builds a waveform_element struct with a simple command
         */ 
         struct waveform_element assign_simple(waveform_t type, double amplitude);
+
+        /*
+        * forms and sends a string responsding to a duration request
+        */
+        int send_duration_str();
 
         struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
         unsigned int waveforms_i;

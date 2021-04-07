@@ -27,7 +27,6 @@ Parser::Parser(RS232 *rs232) {
 * resets all parser memory. Must be done for every command
 */
 void Parser::reset_bt_parser(){
-    // TODO move prev command to another buffer for echoing
     this->parse_buf_i = 0;
     this->state = PREF;
     this->in_progress.param1 = 0.0;
@@ -42,6 +41,7 @@ int Parser::increment_parser(bt_command *cmd){
     char c;
     if (rs232->read_fifo_size()){
         rs232->getchar(&c);
+        printf("%c", c);
         return this->parse_bluetooth_char(c, cmd);
     }
     else {
@@ -68,7 +68,10 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
         else { // terminated with some params added
             cmd_id = (int) this->in_progress.cmd;
         }
-        if (cmd_id >= 0) *cmd = this->in_progress;
+        if (cmd_id >= 0) {
+            *cmd = this->in_progress;
+            this->parse_buf[this->parse_buf_i + 1] = '\0'; // store as null terminated string for echoing back
+        }
         this->reset_bt_parser();
         return cmd_id;
     }
@@ -195,6 +198,12 @@ int Parser::check_cmd_str(char* str, unsigned int start, unsigned int len){
         if (cmd > -1) break;
     }
     return cmd;
+}
+
+int Parser::send_str_bt(char *str){
+    for(unsigned int i = 0; str[i] != '\0'; i++) {
+        rs232->putchar(str[i]);
+    }
 }
 
 /* 

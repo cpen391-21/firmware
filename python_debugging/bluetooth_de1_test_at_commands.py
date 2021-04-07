@@ -43,7 +43,7 @@ import serial, time
 # Connect to the DE-1 over bluetooth, and change the COM port to match
 # the port of your computer (see "Bluetooth_working_with_USB_uart.png"
 # for an example of this).
-s = serial.Serial('COM6', 115200, timeout=1)
+s = serial.Serial('COM4', 115200, timeout=1)
 
 print("Serial connected")
 
@@ -55,6 +55,8 @@ while True:
     s.write(command_bytes)
 
     lns = s.readlines()
+
+    time.sleep(1)
 
     if (len(lns) == 0 or lns[0] != command_bytes):
         print("Error! We did not receive what we sent. Sent:")

@@ -32,7 +32,6 @@ enum command_part{PREF, CMD, PARAM1A, PARAM1B, PARAM2A, PARAM2B, PARAM3A, PARAM3
 class Parser {
     private:
         RS232 *rs232;
-        char parse_buf[BUFLEN];
 
         bt_command in_progress;
         command_part state;
@@ -61,6 +60,14 @@ class Parser {
         * clears out parser
         */ 
         void reset_bt_parser();
+
+        /*
+        * sends '\0' terminated char array over bluetooth. used for echoing commands.
+        * returns the number of characters sent
+        */
+        int send_str_bt(char *str);
+
+        char parse_buf[BUFLEN];
 };
 
 /* 
