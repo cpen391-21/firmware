@@ -39,8 +39,7 @@ void Parser::reset_bt_parser(){
 */
 int Parser::increment_parser(bt_command *cmd){
     char c;
-    if (rs232->read_fifo_size()){
-        rs232->getchar(&c);
+    if (rs232->getchar(&c)){
         printf("%c", c);
         return this->parse_bluetooth_char(c, cmd);
     }

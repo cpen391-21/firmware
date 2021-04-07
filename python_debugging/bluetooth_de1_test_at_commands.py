@@ -43,7 +43,7 @@ import serial, time
 # Connect to the DE-1 over bluetooth, and change the COM port to match
 # the port of your computer (see "Bluetooth_working_with_USB_uart.png"
 # for an example of this).
-s = serial.Serial('COM4', 115200, timeout=1)
+s = serial.Serial('COM6', 115200, timeout=1)
 
 print("Serial connected")
 
@@ -66,4 +66,7 @@ while True:
         i = (i+1) % len(commands)
 
     for ln in lns:
-        print(ln.decode('utf-8'),end='')
+        try:
+            print(ln.decode('utf-8'),end='')
+        except:
+            print(ln,end='')

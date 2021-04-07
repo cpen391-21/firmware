@@ -222,8 +222,10 @@ void mono_bt_player(void) {
 
 	Parser parser(&bluetooth);
 
+	char c;
+
 	while (1) {
-		uart_fifo = bluetooth.read_fifo_size();
+		uart_fifo = bluetooth.getchar(&c);
 		if (uart_fifo > 127) {
 			bluetooth.sendmsg("Warning: UART fifo is full!\n\0");
 		}
