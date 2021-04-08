@@ -451,7 +451,13 @@ void new_parser(void) {
 
 	Parser parser(&bluetooth);
 
+	char c;
+
 	while (1) {
+
+		//if (bluetooth.getchar(&c)) {
+			//printf("%c", c);
+		//}
 
 		len = parser.getstring(&data);
 

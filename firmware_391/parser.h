@@ -5,8 +5,8 @@
 #include "rs232.h"
 
 #define STARTFLAG '+'
-#define ENDFLAG   '\r'
-#define ESCAPE    0x10
+#define ENDFLAG   '\n'
+#define ESCAPE    0x00
 #define BUFLEN    1024
 
 enum command_t {

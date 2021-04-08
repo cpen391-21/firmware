@@ -38,6 +38,8 @@ int Parser::getstring(char **data) {
     while (i < BUFLEN) {
     	while(!rs232->getchar(&c) && j < TIMEOUT) {j++;};
 
+        //printf("%c", c);
+
         /* If the previous character was an escape character, this current
          * character is part of the data. That means that we add it to our
          * buffer regardless of whether or not it is a special character */
@@ -77,6 +79,7 @@ int Parser::getstring(char **data) {
 
     if (i == BUFLEN) {
         printf("Buffer overflow!\n");
+        rs232->flush();
     }
 
     *data = (char *)malloc(i*sizeof(char));
