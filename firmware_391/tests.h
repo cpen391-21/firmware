@@ -99,4 +99,6 @@ void waveform_player_demo(void);
 
 void new_parser(void);
 
+void controller(void);
+
 #endif /* TESTS_H_ */

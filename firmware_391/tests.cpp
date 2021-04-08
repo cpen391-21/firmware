@@ -314,6 +314,7 @@ void sine_wave_waveform_player(void) {
 
 // Demo for waveform_player and signal_gen
 struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
+int num_waveforms;
 
 void clear_waveform_elements() {
 	struct waveform_element nothing = {noise, {0}};
@@ -321,6 +322,8 @@ void clear_waveform_elements() {
 	for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
 		waveforms[i] = nothing;
 	}
+
+	num_waveforms = 0;
 
 	//SignalGen::write_waveforms(waveforms, &sdram);
 	//printf("Cleared waveform elements\n");
@@ -441,43 +444,57 @@ void waveform_player_demo(void) {
 
 void new_parser(void) {
 	int len;
-	char *data;
-	char *data_keyword  = "d:\0";
-	char *vol_keyword   = "v:\0"; // out of 16, we just do a bit shift.
-    char *start_keyword = "start\0";
-    char *stop_keyword  = "stop\0";
-    char *size_keyword  = "s:\0";
-
 
 	Parser parser(&bluetooth);
 
-	char c;
-
 	while (1) {
-
-		//if (bluetooth.getchar(&c)) {
-			//printf("%c", c);
-		//}
 
 		len = parser.getstring();
 
 		if (len) {
-			printf("\nNew line (len %4d): ", len);
-			for (int i = 0; i < len; i++) {
-				printf("%c", parser.buffer[i]);
-			}
-
 			struct waveform_element el = parser.parse_string();
 
 			printf("Type: %d\n", el.type);
 			printf("First val %f\n", el.periodic.freq);
 
-			//bluetooth.putchar('E');
-			//bluetooth.putchar('N');
-			//bluetooth.putchar('+');
 			bluetooth.sendmsg(parser.buffer, len);
-			//bluetooth.putchar('\n');
 		}
 	}
 }
 
+
+void controller(void) {
+	int len;
+	int num_samples;
+	Parser parser(&bluetooth);
+
+	while (1) {
+
+		len = parser.getstring();
+
+		if (len) {
+			struct waveform_element el = parser.parse_string();
+			bluetooth.sendmsg(parser.buffer, len);
+
+			switch (el.type) {
+				case stop:
+					clear_waveform_elements();
+					waveformplayer.stop();
+					break;
+
+				case sine:
+				case noise:
+				case square:
+				case triangle:
+					waveforms[++num_waveforms] = el;
+					break;
+
+				case start:
+					num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+					printf("(Num samples: %d)\n", num_samples);
+					waveformplayer.setlen(num_samples);
+					waveformplayer.start();
+			}
+		}
+	}
+}
