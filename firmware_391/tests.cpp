@@ -314,7 +314,7 @@ void sine_wave_waveform_player(void) {
 // Demo for waveform_player and signal_gen
 struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 
-void clear_waveform_elements(SDRAM *sdram) {
+void clear_waveform_elements() {
 	struct waveform_element nothing = {noise, {0}};
 
 	for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
@@ -412,20 +412,24 @@ void waveform_player_demo(void) {
 
 			waveformplayer.stop();
 
+			clear_waveform_elements();
+
 			val = switches.get();
 			printf("New Switch Value: %d\n", val);
 
 			switch(val) {
-				case 0: signal_gen_noise();
+				case 1: signal_gen_noise();
 						break;
-				case 1: signal_gen_sine_440();
+				case 2: signal_gen_sine_440();
 						break;
-				case 2: signal_gen_sine_587();
+				case 4: signal_gen_sine_587();
 						break;
-				case 3: signal_gen_fourth();
+				case 8: signal_gen_fourth();
 						break;
-				case 4: noisy_square();
+				case 16: noisy_square();
 						break;
+				default: continue;
+						 break;
 			}
 
 
