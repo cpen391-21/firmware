@@ -11,10 +11,10 @@ class RS232 {
         RS232(unsigned int address);
 
         void sendmsg(char *c);
+        void sendmsg(char *c, int len);
 
         int putchar(char c);
         int getchar(char *c);
-        int read_fifo_size();
         void flush();
 };
 /*

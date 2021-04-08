@@ -8,24 +8,24 @@
 
 commands = []
 
-commands.append("EN+STOP_WAVE\n")
+commands.append("EN+STOP_WAVE\r")
 
-commands.append("EN+NEW_WAVE,100\n")
+commands.append("EN+NEW_WAVE,100\r")
 
-commands.append("EN+ADD_RANDOM,0.1\n")
+commands.append("EN+ADD_RANDOM,0.1\r")
 
-commands.append("EN+ADD_SQUARE,40.5,0.5\n")
+commands.append("EN+ADD_SQUARE,40.5,0.5\r")
 
-commands.append("EN+ADD_OFFSET,12\n")
+commands.append("EN+ADD_OFFSET,12\r")
 
-commands.append("EN+START_WAVE\n")
+commands.append("EN+START_WAVE\r")
 
-commands.append("EN+PAUSE\n")
+commands.append("EN+PAUSE\r")
 
-commands.append("EN+RESUME\n")
+commands.append("EN+RESUME\r")
 
 # This will return the remaining duration of the DE1 regimen.
-commands.append("EN+DURATION?\n")
+commands.append("EN+DURATION?\r")
 
 commands.append("Gibberish")
 

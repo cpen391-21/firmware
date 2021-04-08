@@ -175,9 +175,10 @@ void mono_bt_player(void) {
 	bool enable_audio = false;
 
 	Parser parser(&bluetooth);
+	char c;
 
 	while (1) {
-		uart_fifo = bluetooth.read_fifo_size();
+		uart_fifo = bluetooth.getchar(&c);
 		if (uart_fifo > 127) {
 			bluetooth.sendmsg("Warning: UART fifo is full!\n\0");
 		}
@@ -429,7 +430,6 @@ void waveform_player_demo(void) {
 				case 16: noisy_square();
 						break;
 				default: continue;
-						 break;
 			}
 
 
@@ -439,4 +439,35 @@ void waveform_player_demo(void) {
 	}
 }
 
+void new_parser(void) {
+	int len;
+	char *data;
+	char *data_keyword  = "d:\0";
+	char *vol_keyword   = "v:\0"; // out of 16, we just do a bit shift.
+    char *start_keyword = "start\0";
+    char *stop_keyword  = "stop\0";
+    char *size_keyword  = "s:\0";
+
+
+	Parser parser(&bluetooth);
+
+	while (1) {
+
+		len = parser.getstring(&data);
+
+		if (len) {
+			char *print = data;
+			printf("\nNew line (len %4d): ", len);
+			for (int i = 0; i < len; i++) {
+				printf("%c", *print++);
+			}
+
+			bluetooth.putchar('E');
+			bluetooth.putchar('N');
+			bluetooth.putchar('+');
+			bluetooth.sendmsg(data, len);
+			bluetooth.putchar('\r');
+		}
+	}
+}
 

@@ -5,7 +5,7 @@ Parser                  parser(&bluetooth);
 
 control::control(){
     this->playing = false;
-    parser.reset_bt_parser();
+    //parser.reset_bt_parser();
 }
 
 int control::commence(){
@@ -13,34 +13,25 @@ int control::commence(){
     int parse_result;
 
     while(true){
-        parse_result = parser.parse_bluetooth(&(this->command));
-        if (parse_result >= 0){
-            this->execute_cmd(this->command);
-            // struct waveform_element el = {.type = sine, .periodic = {.freq = 40, .amplitude = 1, .offset = 90}};
-            // waveforms[i++] = el;
-        }
-        else {
-            if (this->playing){
-                // TODO: check for stop command in switches
-                continue;
-            }
-            else {
-                // TODO: maybe add switch input?
-                continue;
-            }
-        }
+    //parse_result = parser.parse_bluetooth(&(this->command));
+    //if (parse_result >= 0){
+        //this->execute_cmd(this->command);
+        //// struct waveform_element el = {.type = sine, .periodic = {.freq = 40, .amplitude = 1, .offset = 90}};
+        //// waveforms[i++] = el;
+    //}
+    //else {
+        //if (this->playing){
+            //// TODO: check for stop command in switches
+            //continue;
+        //}
+        //else {
+            //// TODO: maybe add switch input?
+            //continue;
+        //}
+    //}
+//}
     }
 }
-
-
-int control::execute_cmd(struct bt_command cmd){
-    switch(cmd.cmd) {
-        default: break;
-    }
-
-    return -1;
-}
-
 
 /*
 int control::stream_audio(char* initial, unsigned int len){

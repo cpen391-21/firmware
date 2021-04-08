@@ -42,23 +42,25 @@ void RS232::sendmsg(char *c) {
 	}
 }
 
+void RS232::sendmsg(char *c, int len) {
+	for (int i = 0; i < len; i++) {
+		putchar(*c);
+		c++;
+	}
+}
+
 int RS232::getchar(char *c)
 {
 	unsigned int data = *address;
 	unsigned int data_valid = data & 0x8000;
+	unsigned int read_fifo_size = (data >> 16) & 0xFF;
 
 	if (data_valid) {
 		*c = data & 0xFF;
-		return 0;
+		return read_fifo_size;
 	}
 
-	return -1;
-}
-
-int RS232::read_fifo_size(void)
-{
-	int data = *(volatile unsigned int *)0xFF200080;
-	return (data >> 16) & 0xFF;
+	return 0;
 }
 
 //
@@ -67,8 +69,6 @@ int RS232::read_fifo_size(void)
 void RS232::flush(void)
 {
 	char c;
-	while (read_fifo_size()) {
-		getchar(&c);
-	};
+	while (getchar(&c)) {};
 	return; // no more characters so return
 }

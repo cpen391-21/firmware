@@ -97,4 +97,6 @@ void test_signal_gen_squares(void);
 
 void waveform_player_demo(void);
 
+void new_parser(void);
+
 #endif /* TESTS_H_ */
