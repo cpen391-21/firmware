@@ -18,6 +18,7 @@
 #include "switches.h"
 #include "sdram.h"
 #include "waveform_player.h"
+#include "control.h"
 
 #include "tests.h"
 
@@ -27,5 +28,7 @@ WaveformPlayer waveformplayer(0xFF200090);
 SDRAM                   sdram(0xC0000000);
 
 int main(void) {
-	waveform_player_demo();
+	Control control;
+	bluetooth.flush();
+	control.commence();
 }

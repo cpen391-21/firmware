@@ -28,15 +28,14 @@ std::string wifi::send_cmd(std::string cmd){
     uart->putchar('\r'); // return ends AT command
 
     time(&start);
-    while (!uart->read_fifo_size()){ // wait for esp to respond
+    while (!uart->getchar(&resp_char)){ // wait for esp to respond
         time(&curr_time);
         if (difftime(curr_time, start) > RESP_TIMEOUT) {
             return RESP_TIMEOUT_MSG;
         }
     }
 
-    while (uart->read_fifo_size()){
-        uart->getchar(&resp_char);
+    while (uart->getchar(&resp_char)){
         resp_vec.push_back(resp_char);
     }
 

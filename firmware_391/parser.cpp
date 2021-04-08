@@ -8,17 +8,24 @@
 char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
     "NEW_WAVE",
     "ADD_SINE",
+    "ADD_TRIANGLE",
     "ADD_RANDOM",
     "ADD_SQUARE",
     "ADD_OFFSET",
     "START_WAVE",
-    "STOP_WAVE"
+    "STOP_WAVE",
+    "PAUSE",
+    "RESUME",
+    "DURATION?"
 };
 
 Parser::Parser(RS232 *rs232) {
     this->rs232 = rs232;
 }
 
+/*
+* resets all parser memory. Must be done for every command
+*/
 void Parser::reset_bt_parser(){
     this->parse_buf_i = 0;
     this->state = PREF;
@@ -27,19 +34,27 @@ void Parser::reset_bt_parser(){
     this->in_progress.param3 = 0.0;
 }
 
-int Parser::parse_bluetooth(bt_command *cmd){
-    static unsigned int parse_denom = 1;
-    int chr_int;
-    int cmd_id;
-
+/*
+* checks if there's a char waiting and if so, calls parse_bluetooth_char
+*/
+int Parser::increment_parser(bt_command *cmd){
     char c;
-    if (rs232->read_fifo_size()){
-        rs232->getchar(&c);
+    if (rs232->getchar(&c)){
+        printf("%c", c);
+        return this->parse_bluetooth_char(c, cmd);
     }
     else {
         return NO_CHAR;
     }
-    
+}
+
+/*
+* parses a single char for commands
+*/
+int Parser::parse_bluetooth_char(char c, bt_command *cmd){
+    static unsigned int parse_denom = 1;
+    int chr_int;
+    int cmd_id;
 
     if (c == TERMINATION) { // end of message found
         this->parse_buf[this->parse_buf_i] = c;
@@ -48,21 +63,23 @@ int Parser::parse_bluetooth(bt_command *cmd){
         }
         else if (this->state == CMD){ // terminating without params
             cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
+            if (cmd_id >= 0) this->in_progress.cmd = (command_t) cmd_id;
         }
         else { // terminated with some params added
             cmd_id = (int) this->in_progress.cmd;
         }
-        if (cmd_id >= 0) *cmd = this->in_progress;
+        if (cmd_id >= 0) {
+            *cmd = this->in_progress;
+            this->parse_buf[this->parse_buf_i + 1] = '\0'; // store as null terminated string for echoing back
+        }
         this->reset_bt_parser();
         return cmd_id;
     }
 
-    switch(this->state){
+    switch(this->state){ // state machine parsing
         case PREF:
             if (c == PREFIX[this->parse_buf_i]) {
-                this->parse_buf[this->parse_buf_i] = c;
-                this->parse_buf_i ++;
-                if (this->parse_buf_i >= PREFIX_LEN) this->state = CMD;
+                if (this->parse_buf_i >= PREFIX_LEN - 1) this->state = CMD;
             }
             else {
                 this->reset_bt_parser();
@@ -100,7 +117,7 @@ int Parser::parse_bluetooth(bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param1 += (double) chr_int / parse_denom;
+                this->in_progress.param1 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = PARAM2A;
@@ -125,7 +142,7 @@ int Parser::parse_bluetooth(bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param2 += (double) chr_int / parse_denom;
+                this->in_progress.param2 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = PARAM3A;
@@ -149,7 +166,7 @@ int Parser::parse_bluetooth(bt_command *cmd){
             chr_int = char_to_int(c);
             if(chr_int >= 0) {
                 parse_denom *= 10;
-                this->in_progress.param3 += (double) chr_int / parse_denom;
+                this->in_progress.param3 += ((double) chr_int) / parse_denom;
             }
             else if (c == ',') {
                 this->state = GIB;
@@ -159,10 +176,8 @@ int Parser::parse_bluetooth(bt_command *cmd){
             break;
     }
 
-    if(this->state != PREF) {
-        this->parse_buf[this->parse_buf_i] = c;
-        this->parse_buf_i ++;
-    }
+    this->parse_buf[this->parse_buf_i] = c;
+    this->parse_buf_i ++;
 
     return CMD_IN_PROG; // if we've gotten to this point without returning, it means we're midway through parsing a command
 }
@@ -183,6 +198,12 @@ int Parser::check_cmd_str(char* str, unsigned int start, unsigned int len){
         if (cmd > -1) break;
     }
     return cmd;
+}
+
+int Parser::send_str_bt(char *str){
+    for(unsigned int i = 0; str[i] != '\0'; i++) {
+        rs232->putchar(str[i]);
+    }
 }
 
 /* 

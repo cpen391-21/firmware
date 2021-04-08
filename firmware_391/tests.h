@@ -36,6 +36,16 @@ extern SDRAM sdram;
 
 #define SDRAM_LEN 33554432
 
+#define NUM_PARSER_TESTS    4
+
+// compare double equality with a bit of wiggle room
+bool double_cmp(double a, double b);
+
+// compares outputted parser command from string with expected
+bool single_parser_test(char *str, bt_command expected);
+
+// initates multiple tests of command parser
+void test_bt_parser(void);
 
 // Plays a square wave repeatedly to the memory-mapped audio core
 void test_audio_square();

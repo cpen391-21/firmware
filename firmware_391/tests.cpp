@@ -6,14 +6,60 @@
  */
 
 #include "tests.h"
+#include "control.h"
+#include "parser.h"
 
 AudioCore               audio(0xFF200090);
+Parser			 parse_tester(&bluetooth);
 
 char outbuffer[256];
 
 short        audio_data[AUDIO_DATA_MAX_SIZE];
 unsigned int audio_data_size = 1;
 unsigned int audio_data_position = 0;
+
+bool double_cmp(double a, double b) {
+	return (a - b) < 0.0001 || (a - b) > 0.0001;
+}
+
+bool single_parser_test(char *str, bt_command expected) {
+	bt_command result = {NEW_WAVE, 0.0, 0.0, 0.0};
+	parse_tester.reset_bt_parser();
+	int cmd_id = -1;
+
+	for (unsigned int i = 0; str[i] != '\0'; i++) {
+		cmd_id = parse_tester.parse_bluetooth_char(str[i], &result);
+	}
+
+	return cmd_id == (int) expected.cmd &&
+		result.cmd == expected.cmd &&
+		double_cmp(result.param1, expected.param1) &&
+		double_cmp(result.param2, expected.param2) &&
+		double_cmp(result.param3, expected.param3);
+}
+
+void test_bt_parser(void) {
+	unsigned int successes = 0;
+	bt_command results[NUM_PARSER_TESTS] = {
+		{NEW_WAVE, 12.34, 0.0, 0.0},
+		{ADD_SINE, 8, 7.0, 0.0},
+		{ADD_TRIANGLE, 0, 0, 0.0},
+		{ADD_RANDOM, 5.3453, 4.2, 0.0}
+	};
+
+	char command_strs[NUM_PARSER_TESTS][32] = {
+		"EN+NEW_WAVE,12.34\n",
+		"EN+ADD_SINE,8.0,7\n",
+		"EN+ADD_TRIANGLE,0,0\n",
+		"EN+ADD_RANDOM,5.3453,4.2\n"
+	};
+
+	for (unsigned int i = 0; i < NUM_PARSER_TESTS; i++) {
+		if (single_parser_test(command_strs[i], results[i])) successes ++;
+	}
+
+	sprintf(outbuffer, "Out of %d parser tests, %d passed. \n", NUM_PARSER_TESTS, successes);
+}
 
 void test_audio_square(void) {
 	// we need to send 16 bit data to the device
@@ -176,8 +222,10 @@ void mono_bt_player(void) {
 
 	Parser parser(&bluetooth);
 
+	char c;
+
 	while (1) {
-		uart_fifo = bluetooth.read_fifo_size();
+		uart_fifo = bluetooth.getchar(&c);
 		if (uart_fifo > 127) {
 			bluetooth.sendmsg("Warning: UART fifo is full!\n\0");
 		}

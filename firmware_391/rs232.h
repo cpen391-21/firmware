@@ -14,7 +14,6 @@ class RS232 {
 
         int putchar(char c);
         int getchar(char *c);
-        int read_fifo_size();
         void flush();
 };
 /*
