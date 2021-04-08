@@ -21,13 +21,11 @@
 
 #include "tests.h"
 
-/*
 Switches             switches(0xFF200000);
 RS232               bluetooth(0xFF200080);
 WaveformPlayer waveformplayer(0xFF200090);
 SDRAM                   sdram(0xC0000000);
-*/
 
 int main(void) {
-	sine_wave_waveform_player();
+	waveform_player_demo();
 }

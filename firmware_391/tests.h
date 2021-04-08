@@ -18,6 +18,8 @@
 #include "switches.h"
 #include "waveform_player.h"
 #include "sdram.h"
+#include "control.h"
+#include "signal_gen.h"
 
 #define pi 3.141592653589793238
 
@@ -86,5 +88,13 @@ void test_sdram_waveform_player(void);
 // This is how the HW accelerator is meant to work in real life.
 // Load data into it, and push play. You're good to go!
 void sine_wave_waveform_player(void);
+
+
+// This should play a sine wave which is generated on the DE1 and
+// Loaded into SDRAM.
+void test_signal_gen_sines(void);
+void test_signal_gen_squares(void);
+
+void waveform_player_demo(void);
 
 #endif /* TESTS_H_ */

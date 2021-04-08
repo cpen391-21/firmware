@@ -1,18 +1,12 @@
 #include "control.h"
 #include <time.h> 
 
-Switches             switches(0xFF200000);
-RS232               bluetooth(0xFF200080);
-// RS232                    wifi(0xFF200088);
-WaveformPlayer waveformplayer(0xFF200090);
-SDRAM                   sdram(0xC0000000);
 Parser                  parser(&bluetooth);
 
 control::control(){
     this->playing = false;
     parser.reset_bt_parser();
 }
-
 
 int control::commence(){
     char* data;
