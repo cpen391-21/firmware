@@ -311,19 +311,128 @@ void sine_wave_waveform_player(void) {
 
 }
 
-/*
-void test_parser(void) {
-	int len;
-	char *data;
-	Parser parser(&bluetooth);
+// Demo for waveform_player and signal_gen
+struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 
-	while (1) {
-		len = parser.getdata(&data);
-		*//*if(len) {
-			for (int i = 0; i < len; i++) {
-				printf("%c", data[i]);
+void clear_waveform_elements(SDRAM *sdram) {
+	struct waveform_element nothing = {noise, {0}};
+
+	for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
+		waveforms[i] = nothing;
+	}
+
+	//SignalGen::write_waveforms(waveforms, &sdram);
+	//printf("Cleared waveform elements\n");
+}
+
+void signal_gen_sine_440(void) {
+	unsigned int num_samples;
+
+	struct waveform_element wave0 = {sine, {440, 0.9}};
+	//struct waveform_element wave1 = {sine, {110, 0.3}};
+
+    waveforms[0] = wave0;
+	//waveforms[1] = wave1;
+
+	num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+	printf("Sine wave written (440Hz) ");
+	printf("(Num samples: %d)\n", num_samples);
+
+	waveformplayer.setlen(num_samples);
+}
+
+void signal_gen_sine_587(void) {
+	unsigned int num_samples;
+
+	struct waveform_element wave0 = {sine, {587.33, 0.9}};
+	//struct waveform_element wave1 = {sine, {110, 0.3}};
+
+    waveforms[0] = wave0;
+	//waveforms[1] = wave1;
+
+	num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+	printf("Sine wave written (587.33Hz) ");
+	printf("(Num samples: %d)\n", num_samples);
+
+	waveformplayer.setlen(num_samples);
+}
+
+void signal_gen_fourth(void) {
+	unsigned int num_samples;
+
+	struct waveform_element wave0 = {sine, {523.25, 0.45}};
+	struct waveform_element wave1 = {sine, {698.46, 0.45}};
+
+    waveforms[0] = wave0;
+	waveforms[1] = wave1;
+
+	num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+	printf("Perfect fourth (523.25Hz/698.46Hz) ");
+	printf("(Num samples: %d)\n", num_samples);
+
+	waveformplayer.setlen(num_samples);
+}
+
+void noisy_square(void) {
+	unsigned int num_samples;
+
+	struct waveform_element wave0 = {square, {440, 0.45}};
+	struct waveform_element wave1 = {noise, {0.45}};
+
+    waveforms[0] = wave0;
+	waveforms[1] = wave1;
+
+	num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+	printf("Noisy Square (440Hz) ");
+	printf("(Num samples: %d)\n", num_samples);
+
+	waveformplayer.setlen(num_samples);
+}
+
+
+void signal_gen_noise(void) {
+	unsigned int num_samples;
+
+	struct waveform_element rand_noise = {noise, {1./32}};
+
+	for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
+		waveforms[i] = rand_noise;
+	}
+
+	num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+	printf("Noise data written ");
+	printf("(Num samples: %d)\n", num_samples);
+}
+
+
+void waveform_player_demo(void) {
+	unsigned int val;
+	while (true) {
+		if (switches.newval()) {
+
+			waveformplayer.stop();
+
+			val = switches.get();
+			printf("New Switch Value: %d\n", val);
+
+			switch(val) {
+				case 0: signal_gen_noise();
+						break;
+				case 1: signal_gen_sine_440();
+						break;
+				case 2: signal_gen_sine_587();
+						break;
+				case 3: signal_gen_fourth();
+						break;
+				case 4: noisy_square();
+						break;
 			}
-		}*//*
+
+
+			waveformplayer.start();
+
+		}
 	}
 }
-*/
+
+
