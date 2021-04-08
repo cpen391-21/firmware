@@ -29,6 +29,8 @@ class Parser {
         string sine_kw;
         string square_kw;
         string rand_kw;
+        string pause_kw;
+        string resume_kw;
 
     public:
         Parser(RS232 *rs232);

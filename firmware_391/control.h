@@ -31,7 +31,9 @@ typedef enum {
     triangle,
     offset,
     start,
-    stop
+    stop,
+    pause,
+    resume
 } waveform_t;
 
 // For sine, random, square

@@ -494,6 +494,12 @@ void controller(void) {
 					printf("(Num samples: %d)\n", num_samples);
 					waveformplayer.setlen(num_samples);
 					waveformplayer.start();
+				case pause:
+					waveformplayer.stop();
+					break;
+				case resume:
+					waveformplayer.start();
+					break;
 			}
 		}
 	}
