@@ -8,26 +8,26 @@
 
 commands = []
 
-commands.append("EN+STOP_WAVE\r")
+commands.append("EN+STOP_WAVE)")
 
-commands.append("EN+NEW_WAVE,100\r")
+commands.append("EN+NEW_WAVE,100)")
 
-commands.append("EN+ADD_RANDOM,0.1\r")
+# commands.append("EN+ADD_RANDOM,0.1\n")
 
-commands.append("EN+ADD_SQUARE,40.5,0.5\r")
+# commands.append("EN+ADD_SQUARE,40.5,0.5\n")
 
-commands.append("EN+ADD_OFFSET,12\r")
+# commands.append("EN+ADD_OFFSET,12\n")
 
-commands.append("EN+START_WAVE\r")
+# commands.append("EN+START_WAVE\n")
 
-commands.append("EN+PAUSE\r")
+# commands.append("EN+PAUSE\n")
 
-commands.append("EN+RESUME\r")
+# commands.append("EN+RESUME\n")
 
-# This will return the remaining duration of the DE1 regimen.
-commands.append("EN+DURATION?\r")
+# # This will return the remaining duration of the DE1 regimen.
+# commands.append("EN+DURATION?\n")
 
-commands.append("Gibberish")
+# commands.append("Gibberish")
 
 for c in commands:
     print(c, end='')
@@ -50,9 +50,13 @@ print("Serial connected")
 i = 0
 
 while True:
-    command_bytes = commands[i].encode('utf-8')
+    command_bytes = commands[i].encode('ascii')
+    print("Sent:")
+    print(command_bytes)
     #s.write("fake news".encode('utf-8'))
     s.write(command_bytes)
+
+    time.sleep(2)
 
     lns = s.readlines()
 
@@ -60,8 +64,13 @@ while True:
         print("Error! We did not receive what we sent. Sent:")
         print(command_bytes.decode('utf-8'))
         print("Received:")
-    else:
-        i = (i+1) % len(commands)
+
+    i = (i+1) % len(commands)
 
     for ln in lns:
-        print(ln.decode('utf-8'),end='')
+        try:
+            print(ln.decode('utf-8'))
+        except:
+            print(ln)
+
+    time.sleep(10)

@@ -459,20 +459,24 @@ void new_parser(void) {
 			//printf("%c", c);
 		//}
 
-		len = parser.getstring(&data);
+		len = parser.getstring();
 
 		if (len) {
-			char *print = data;
 			printf("\nNew line (len %4d): ", len);
 			for (int i = 0; i < len; i++) {
-				printf("%c", *print++);
+				printf("%c", parser.buffer[i]);
 			}
 
-			bluetooth.putchar('E');
-			bluetooth.putchar('N');
-			bluetooth.putchar('+');
-			bluetooth.sendmsg(data, len);
-			bluetooth.putchar('\r');
+			struct waveform_element el = parser.parse_string();
+
+			printf("Type: %d\n", el.type);
+			printf("First val %f\n", el.periodic.freq);
+
+			//bluetooth.putchar('E');
+			//bluetooth.putchar('N');
+			//bluetooth.putchar('+');
+			bluetooth.sendmsg(parser.buffer, len);
+			//bluetooth.putchar('\n');
 		}
 	}
 }

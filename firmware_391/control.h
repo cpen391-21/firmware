@@ -29,7 +29,9 @@ typedef enum {
     noise,
     square,
     triangle,
-    offset
+    offset,
+    start,
+    stop
 } waveform_t;
 
 // For sine, random, square

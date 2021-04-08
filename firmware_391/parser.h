@@ -3,36 +3,44 @@
 
 #include <stdint.h>
 #include "rs232.h"
+#include "control.h"
 
-#define STARTFLAG '+'
-#define ENDFLAG   '\n'
-#define ESCAPE    0x00
-#define BUFLEN    1024
+#include <vector>
+#include <string>
+#include <sstream>
+#include <iostream>
 
-enum command_t {
-    NEW_WAVE,
-    ADD_SINE,
-    ADD_RANDOM,
-    ADD_SQUARE,
-    ADD_OFFSET,
-    START_WAVE,
-    STOP_WAVE
-};
+using namespace std;
 
-
+#define STARTFLAG 0x40
+#define ENDFLAG   0x41
+#define ESCAPE    0x10
+#define BUFLEN    256
 
 class Parser {
     private:
         RS232 *rs232;
-        char buffer[BUFLEN];
+        int startflag();
+        int compare_string_start(string compstr, string refstring);
+        struct waveform_element parse_command(string command, int type, int num_doubles);
+
+        string start_kw;
+        string stop_kw;
+        string sine_kw;
+        string square_kw;
+        string rand_kw;
+
     public:
         Parser(RS232 *rs232);
 
+        char buffer[BUFLEN];
+        int size;
+
         // Copies a datagram into data.
         // Returns the length of said datagram.
-        int getstring(char **data);
+        int getstring();
+        struct waveform_element parse_string();
 
-        int startflag();
 };
 
 #endif //PARSER_H

@@ -59,27 +59,8 @@ def printbytearray(ba):
         print(f"{b:02x}", end=' ')
     print()
 
-# Audio data must be 16 bits!
-def createDatagram(audio_data, address):
-    audio_data_bytes = audio_data.to_bytes(2, 'big', signed=True)
-    address_bytes = address.to_bytes(3, 'big')
-
-    bytestr = bytearray("d:", 'ascii')
-    bytestr.extend(audio_data_bytes)
-    bytestr.extend(address_bytes)
-
-    framebytestring(bytestr)
-    #printbytearray(bytestr)
-    return bytestr
-
-def update_size(size):
-    bytestr = bytearray("s:", 'ascii')
-    bytestr.extend(size.to_bytes(3, 'big'))
-    framebytestring(bytestr)
-    return bytestr
-
-def start_audio():
-    bytestr = bytearray("start", 'ascii')
+def start_audio(duration):
+    bytestr = bytearray("new," + str(duration), 'ascii')
     framebytestring(bytestr)
     return bytestr
 
@@ -88,36 +69,40 @@ def stop_audio():
     framebytestring(bytestr)
     return bytestr
 
-s = serial.Serial('COM6', 115200)
+def sin(freq, amp):
+    bytestr = bytearray("si," + str(freq) + "," + str(amp), 'ascii')
+    framebytestring(bytestr)
+    return bytestr
+
+def square(freq, amp):
+    bytestr = bytearray("sq," + str(freq) + "," + str(amp), 'ascii')
+    framebytestring(bytestr)
+    return bytestr
+
+def rand(amp):
+    bytestr = bytearray("ra," + str(amp), 'ascii')
+    framebytestring(bytestr)
+    return bytestr
+
+
+s = serial.Serial('COM6', 115200, timeout=0.2)
 print("Serial connected")
 
-command_retry_amount = 10
-retry_amount = 1
-
-for i in range(command_retry_amount):
-    s.write(stop_audio())
+def sendcommand(bytes):
+    global s
+    s.write(bytes)
+    lns = s.readlines()
+    for ln in lns:
+        print(ln)
 
 print("Begin transmitting data")
-time.sleep(3)
-
-for i in range(1024):
-    aud = int(math.sin(2*math.pi*i/512)*65535/2)
-    for j in range(retry_amount):
-        s.write(createDatagram(aud, i))
-        time.sleep(0.02)
-    print(s.read_all().decode("utf-8"))
-
-print("Done transmitting data")
 time.sleep(1)
-for i in range(command_retry_amount):
-    s.write(update_size(1024))
-print(s.read_all())
-time.sleep(0.1)
 
-for i in range(command_retry_amount):
-    s.write(start_audio())
+sendcommand(sin(440,0.9))
+sendcommand(rand(0.9))
+sendcommand(stop_audio())
+sendcommand(start_audio(2.3))
+sendcommand(square(440,0.9))
+sendcommand(rand(0.9))
 
-while True:
-    time.sleep(1)
-    print(s.read_all())
-
+time.sleep(3)
