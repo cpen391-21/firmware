@@ -489,6 +489,16 @@ void controller(void) {
 
 					waveformplayer.start();
 					playing = true;
+					break;
+
+				case pause:
+					waveformplayer.stop();
+					playing = false;
+					break;
+				case resume:
+					waveformplayer.start();
+					playing = true;
+					break;
 			}
 		}
 
