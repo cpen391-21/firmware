@@ -63,6 +63,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
         }
         else if (this->state == CMD){ // terminating without params
             cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
+            if (cmd_id >= 0) this->in_progress.cmd = (command_t) cmd_id;
         }
         else { // terminated with some params added
             cmd_id = (int) this->in_progress.cmd;

@@ -9,7 +9,7 @@
 
 #define PREFIX          "EN+"
 #define PREFIX_LEN      3
-#define TERMINATION     '\n'
+#define TERMINATION     '\r'
 
 #define NUM_COMMANDS    11
 #define MAX_CMD_LEN     16

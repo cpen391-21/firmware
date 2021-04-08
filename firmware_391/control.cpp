@@ -31,7 +31,7 @@ int Control::commence(){
                 this->send_duration_str();
             }
             else {
-                parser.send_str_bt(parser.parse_buf);
+                bluetooth.sendmsg(parser.parse_buf);
             }
         }
     }
