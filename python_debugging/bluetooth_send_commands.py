@@ -4,6 +4,9 @@ import time
 import serial.tools.list_ports as port_list
 import math
 
+s = serial.Serial('COM6', 115200, timeout=0.2)
+print("Serial connected")
+
 #https://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications/
 def framebytestring(bytestring):
     startflag = 0x40
@@ -69,6 +72,16 @@ def stop_audio():
     framebytestring(bytestr)
     return bytestr
 
+def pause_audio():
+    bytestr = bytearray("ps", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
+
+def play_audio():
+    bytestr = bytearray("rs", 'ascii')
+    framebytestring(bytestr)
+    return bytestr
+
 def sin(freq, amp):
     bytestr = bytearray("si," + str(freq) + "," + str(amp), 'ascii')
     framebytestring(bytestr)
@@ -79,14 +92,15 @@ def square(freq, amp):
     framebytestring(bytestr)
     return bytestr
 
-def rand(amp):
-    bytestr = bytearray("ra," + str(amp), 'ascii')
+def triangle(freq, amp):
+    bytestr = bytearray("tr," + str(freq) + "," + str(amp), 'ascii')
     framebytestring(bytestr)
     return bytestr
 
-
-s = serial.Serial('COM6', 115200, timeout=0.2)
-print("Serial connected")
+def noise(amp):
+    bytestr = bytearray("ra," + str(amp), 'ascii')
+    framebytestring(bytestr)
+    return bytestr
 
 def sendcommand(bytes):
     global s
@@ -95,14 +109,48 @@ def sendcommand(bytes):
     for ln in lns:
         print(ln)
 
-print("Begin transmitting data")
-time.sleep(1)
 
-sendcommand(sin(440,0.9))
-sendcommand(rand(0.9))
-sendcommand(stop_audio())
-sendcommand(start_audio(2.3))
-sendcommand(square(440,0.9))
-sendcommand(rand(0.9))
+def demo_noise():
+    print("Noise Demo")
+    sendcommand(stop_audio())
+    sendcommand(noise(0.9))
+    sendcommand(start_audio(10))
+    time.sleep(5)
+    sendcommand(pause_audio())
+    time.sleep(2)
+    sendcommand(play_audio())
+    time.sleep(7)
 
-time.sleep(3)
+def demo_beats():
+    print("Beats Demo")
+    sendcommand(stop_audio())
+    sendcommand(sin(440,0.5))
+    sendcommand(sin(445,0.5))
+    sendcommand(start_audio(5))
+    time.sleep(8)
+
+def demo_chord():
+    print("Fourth Demo")
+    sendcommand(stop_audio())
+    sendcommand(sin(523.25,0.40))
+    sendcommand(sin(698.46,0.40))
+    sendcommand(start_audio(5))
+    time.sleep(8)
+
+def demo_noisy_triangle():
+    print("Noisy Triangle Demo")
+    sendcommand(stop_audio())
+    sendcommand(triangle(200,0.40))
+    sendcommand(noise(0.40))
+    sendcommand(start_audio(5))
+    time.sleep(8)
+
+
+
+if __name__ == "__main__":
+    sendcommand(stop_audio())
+    time.sleep(1)
+
+    demo_noise()
+    demo_beats()
+    demo_noisy_triangle()
