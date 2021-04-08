@@ -61,7 +61,7 @@ unsigned int SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdr
     struct waveform_element *minsize = arr;
 
     // Firstly get the minimum frequency.
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
         if (minsize->type == sine ||
             minsize->type == square ||
             minsize->type == triangle) {

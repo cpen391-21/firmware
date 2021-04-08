@@ -66,7 +66,7 @@ int Control::execute_cmd(struct bt_command cmd){
         case ADD_OFFSET:
             break;
         case START_WAVE:
-            SignalGen::write_waveforms(this->waveforms, &sdram, this->waveforms_i);
+            SignalGen::write_waveforms(this->waveforms, &sdram);
             this->start_player();
             break;
         case STOP_WAVE:
