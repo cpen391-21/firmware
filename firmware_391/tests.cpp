@@ -44,21 +44,6 @@ void test_audio_square(void) {
 	}
 }
 
-void setup_audio_sine() {
-	int size = 4096;
-	double result;
-	short data = 0;
-
-	for (int i = 0; i < size; i++) {
-		result = sin(2 * 3.14159 * i/256) + (sin(2 * 3.14159 * i/128) / 8);
-		result *= amplitude;
-		data   = (short)result;
-		audio_data[i] = data;
-	}
-
-	audio_data_size = size;
-}
-
 void test_audio_sine() {
 	int i = 0;
 	short data;
@@ -466,6 +451,11 @@ void new_parser(void) {
 void controller(void) {
 	int len;
 	int num_samples;
+
+	double time_remaining = 0;
+	double lasttime;
+	bool playing = false;
+
 	Parser parser(&bluetooth);
 
 	while (1) {
@@ -480,6 +470,7 @@ void controller(void) {
 				case stop:
 					clear_waveform_elements();
 					waveformplayer.stop();
+					playing = false;
 					break;
 
 				case sine:
@@ -493,7 +484,22 @@ void controller(void) {
 					num_samples = SignalGen::write_waveforms(waveforms, &sdram);
 					printf("(Num samples: %d)\n", num_samples);
 					waveformplayer.setlen(num_samples);
+					time_remaining = el.simple.amplitude;
+					lasttime = (double)clock()/(double)CLOCKS_PER_SEC;
+
 					waveformplayer.start();
+					playing = true;
+			}
+		}
+
+		if (playing) {
+			double newtime = (double)clock()/(double)CLOCKS_PER_SEC;
+			time_remaining -= (newtime - lasttime);
+			lasttime = newtime;
+
+			if (time_remaining <= 0) {
+				waveformplayer.stop();
+				playing = false;
 			}
 		}
 	}

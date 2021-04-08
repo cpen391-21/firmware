@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #include "audio.h"
 #include "rs232.h"
@@ -28,8 +29,6 @@ extern RS232 bluetooth;
 extern WaveformPlayer waveformplayer;
 extern SDRAM sdram;
 
-/* Half of 16 bits */
-#define amplitude 0x7FFD;
 
 /* Big enough for 1 second of audio */
 #define AUDIO_DATA_MAX_SIZE 48000
@@ -39,9 +38,6 @@ extern SDRAM sdram;
 
 // Plays a square wave repeatedly to the memory-mapped audio core
 void test_audio_square();
-
-// Sets up the audio_data array with a sine wave
-void setup_audio_sine();
 
 // Plays data in the audio_data array (requires setup_audio_sine)
 void test_audio_sine();

@@ -141,10 +141,6 @@ struct waveform_element Parser::parse_command(string command, int type, int num_
         split.push_back(substr);
     }
 
-    for (std::size_t i = 0; i < split.size(); i++) {
-        cout << split[i] << endl;
-    }
-
     if (num_doubles > 0) {
         d1 = strtod(split[1].c_str(), NULL);
     }
