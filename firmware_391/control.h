@@ -23,6 +23,8 @@
 
 #define DUR_MSG_START   "EN+DURATION=%.2f\n"
 
+#define TEST_CONTROL    1
+
 extern Switches switches;
 extern RS232 bluetooth;
 extern WaveformPlayer waveformplayer;

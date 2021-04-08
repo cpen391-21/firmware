@@ -49,7 +49,7 @@ int RS232::getchar(char *c)
 	unsigned int read_fifo_size = (data >> 16) & 0xFF;
 
 	if (data_valid) {
-		*c = data & 0xFF;
+		*c = data & 0x7F;
 		return read_fifo_size;
 	}
 

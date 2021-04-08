@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if TEST_CONTROL
+#include "tests.h"
+#endif
 
 #define TIMEOUT 1024
 
@@ -39,10 +42,13 @@ void Parser::reset_bt_parser(){
 */
 int Parser::increment_parser(bt_command *cmd){
     char c;
+#if TEST_CONTROL
+#else
     if (rs232->getchar(&c)){
         printf("%c", c);
         return this->parse_bluetooth_char(c, cmd);
     }
+#endif
     else {
         return NO_CHAR;
     }
@@ -87,7 +93,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
             }
             break;
         case CMD:
-            if (c == ',') { // we've found end of cmd string
+            if (c == '+') { // we've found end of cmd string
                 cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
                 if (cmd_id < 0 || cmd_id >= NUM_COMMANDS){
                     this->reset_bt_parser();
@@ -109,7 +115,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 this->in_progress.param1 *= 10;
                 this->in_progress.param1 += chr_int;
             }
-            else if (c == ',') { // end of number
+            else if (c == '+') { // end of number
                 this->state = PARAM2A;
             }
             break;
@@ -119,7 +125,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 parse_denom *= 10;
                 this->in_progress.param1 += ((double) chr_int) / parse_denom;
             }
-            else if (c == ',') {
+            else if (c == '+') {
                 this->state = PARAM2A;
             }
             break;
@@ -134,7 +140,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 this->in_progress.param2 *= 10;
                 this->in_progress.param2 += chr_int;
             }
-            else if (c == ',') {
+            else if (c == '+') {
                 this->state = PARAM3A;
             }
             break;
@@ -144,7 +150,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 parse_denom *= 10;
                 this->in_progress.param2 += ((double) chr_int) / parse_denom;
             }
-            else if (c == ',') {
+            else if (c == '+') {
                 this->state = PARAM3A;
             }
             break;
@@ -158,7 +164,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 this->in_progress.param3 *= 10;
                 this->in_progress.param3 += chr_int;
             }
-            else if (c == ',') {
+            else if (c == '+') {
                 this->state = GIB;
             }
             break;
@@ -168,7 +174,7 @@ int Parser::parse_bluetooth_char(char c, bt_command *cmd){
                 parse_denom *= 10;
                 this->in_progress.param3 += ((double) chr_int) / parse_denom;
             }
-            else if (c == ',') {
+            else if (c == '+') {
                 this->state = GIB;
             }
             break;
@@ -221,6 +227,16 @@ int char_to_int(char c){
         case '7': return 7;
         case '8': return 8;
         case '9': return 9;
+        // case 'A': return 0;
+        // case 'B': return 1;
+        // case 'C': return 2;
+        // case 'D': return 3;
+        // case 'E': return 4;
+        // case 'F': return 5;
+        // case 'G': return 6;
+        // case 'H': return 7;
+        // case 'I': return 8;
+        // case 'J': return 9;
         case '.': return -1;
     }
     return -2;

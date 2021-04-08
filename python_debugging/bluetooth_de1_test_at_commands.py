@@ -8,21 +8,29 @@
 
 commands = []
 
-commands.append("EN+STOP_WAVE\r\r")
+commands.append("EN+STOP_WAVE\r")
 
-commands.append("EN+NEW_WAVE,100a\r\r")
+commands.append("EN+NEW_WAVE+100\r")
 
-commands.append("EN+ADD_RANDOM,0.1a\r\r")
+commands.append("EN+ADD_RANDOM+0.1\r")
 
-commands.append("EN+ADD_SQUARE,40.5,0.5a\r\r")
+commands.append("EN+ADD_SQUARE+40.5+0.5\r")
 
-commands.append("EN+ADD_OFFSET,12a\r\r")
+commands.append("EN+ADD_OFFSET+12\r")
 
-commands.append("EN+START_WAVE\r\r")
+# commands.append("EN+NEW_WAVE+BAA\r")
 
-commands.append("EN+PAUSE\r\r")
+# commands.append("EN+ADD_RANDOM+A.B\r")
 
-commands.append("EN+RESUME\r\r")
+# commands.append("EN+ADD_SQUARE+EA.F+0.F\r")
+
+# commands.append("EN+ADD_OFFSET+BC\r")
+
+commands.append("EN+START_WAVE\r")
+
+commands.append("EN+PAUSE\r")
+
+commands.append("EN+RESUME\r")
 
 # This will return the remaining duration of the DE1 regimen.
 commands.append("EN+DURATION?\r\r")
@@ -54,6 +62,8 @@ while True:
     print("Sending command: " + commands[i])
     command_bytes = commands[i].encode('ascii')
     #s.write("fake news".encode('utf-8'))
+    print("Command bytes: ")
+    print(command_bytes)
     s.write(command_bytes)
 
     lns = s.readlines()
