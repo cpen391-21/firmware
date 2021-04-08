@@ -21,7 +21,7 @@ short SignalGen::getvalue(struct waveform_element *el, unsigned int i) {
 
                 } else {
                     //printf("%d\n",(short)(MIN*el->periodic.amplitude) );
-                    return (short)(MIN*el->periodic.amplitude);
+                    return 0;
 
                 }
             }
