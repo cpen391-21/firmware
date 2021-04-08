@@ -471,6 +471,7 @@ void controller(void) {
 					clear_waveform_elements();
 					waveformplayer.stop();
 					playing = false;
+					printf("Stopped\n");
 					break;
 
 				case sine:
@@ -478,15 +479,18 @@ void controller(void) {
 				case square:
 				case triangle:
 					waveforms[++num_waveforms] = el;
+					printf("New wave added\n");
 					break;
 
 				case start:
 					num_samples = SignalGen::write_waveforms(waveforms, &sdram);
-					printf("(Num samples: %d)\n", num_samples);
+					printf("New data written to SDRAM ");
+					printf("(num samples: %d)\n", num_samples);
 					waveformplayer.setlen(num_samples);
 					time_remaining = el.simple.amplitude;
 					lasttime = (double)clock()/(double)CLOCKS_PER_SEC;
 
+					printf("Playing waveform for %f seconds\n", time_remaining);
 					waveformplayer.start();
 					playing = true;
 					break;
@@ -494,10 +498,12 @@ void controller(void) {
 				case pause:
 					waveformplayer.stop();
 					playing = false;
+					printf("Paused\n");
 					break;
 				case resume:
 					waveformplayer.start();
 					playing = true;
+					printf("Playing. Time remaining: %f seconds\n", time_remaining);
 					break;
 			}
 		}
@@ -508,6 +514,7 @@ void controller(void) {
 			lasttime = newtime;
 
 			if (time_remaining <= 0) {
+				printf("Out of time. Stopping Waveform\n");
 				waveformplayer.stop();
 				playing = false;
 			}

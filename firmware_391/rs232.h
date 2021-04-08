@@ -17,15 +17,5 @@ class RS232 {
         int getchar(char *c);
         void flush();
 };
-/*
-int putcharBluetooth(char c);
-
-int BluetoothGetChar(void);
-
-
-int BluetoothReceivedData(void);
-
-void BluetoothFlush(void);
-*/
 
 #endif // RS232_H

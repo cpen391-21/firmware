@@ -28,6 +28,7 @@ class Parser {
         string stop_kw;
         string sine_kw;
         string square_kw;
+        string triangle_kw;
         string rand_kw;
         string pause_kw;
         string resume_kw;

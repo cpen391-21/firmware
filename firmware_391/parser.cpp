@@ -12,6 +12,7 @@ Parser::Parser(RS232 *rs232) {
     stop_kw = "stop";
     sine_kw = "si";
     square_kw = "sq";
+    triangle_kw = "tr";
     rand_kw = "ra";
     pause_kw = "ps";
     resume_kw = "rs";
@@ -110,6 +111,7 @@ struct waveform_element Parser::parse_string() {
     }
 
     string compstr(buffer);
+    compstr = compstr.substr(0,size);
 
 
     if (!compare_string_start(compstr, start_kw)) {
@@ -122,6 +124,8 @@ struct waveform_element Parser::parse_string() {
         return parse_command(compstr, square, 2);
     } else if (!compare_string_start(compstr, rand_kw)) {
         return parse_command(compstr, noise, 1);
+    } else if (!compare_string_start(compstr, triangle_kw)) {
+        return parse_command(compstr, triangle, 2);
     } else if (!compare_string_start(compstr, pause_kw)) {
         return parse_command(compstr, pause, 0);
     } else if (!compare_string_start(compstr, resume_kw)) {
