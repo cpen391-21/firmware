@@ -6,17 +6,21 @@ short SignalGen::getvalue(struct waveform_element *el, unsigned int i) {
             if (el->periodic.amplitude) {
                 double value = sin(2*pi*i*el->periodic.freq/SAMPLING_RATE);
                 value *= el->periodic.amplitude;
-                return (short)(value * SHRT_MAX);
+                //printf("Sine: %f\n", value);
+                return (short)(value * MAX);
             }
             break;
 
         case square:
             if (el->periodic.amplitude) {
+                //printf("Square ");
                 double rate = (double)SAMPLING_RATE / el->periodic.freq / 2;
                 if ((int)(i / rate) % 2) {
+                    //printf("%d\n",(short)(MAX*el->periodic.amplitude) );
                     return (short)(MAX*el->periodic.amplitude);
 
                 } else {
+                    //printf("%d\n",(short)(MIN*el->periodic.amplitude) );
                     return (short)(MIN*el->periodic.amplitude);
 
                 }
@@ -50,7 +54,7 @@ int SignalGen::round(double val) {
     return (val > 0.0) ? std::floor(val + 0.5) : std::ceil(val - 0.5);
 }
 
-void SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdram, unsigned int n) {
+unsigned int SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdram) {
     double min_freq = DBL_MAX;
     double product_freq = 1;
 
@@ -97,6 +101,9 @@ void SignalGen::write_waveforms(struct waveform_element *arr, SDRAM *sdram, unsi
             element++;
         }
 
+        //printf("(%04d, %d)\n", i, (short) value);
         sdram->put(i,value);
     }
+
+    return samples_i;
 }
