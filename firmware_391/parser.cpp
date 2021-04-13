@@ -3,204 +3,180 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TIMEOUT 1024
-
-char command_strs[NUM_COMMANDS][MAX_CMD_LEN] = {
-    "NEW_WAVE",
-    "ADD_SINE",
-    "ADD_RANDOM",
-    "ADD_SQUARE",
-    "ADD_OFFSET",
-    "START_WAVE",
-    "STOP_WAVE"
-};
+#define TIMEOUT 1024 * 1024
 
 Parser::Parser(RS232 *rs232) {
     this->rs232 = rs232;
+
+    start_kw = "new";
+    stop_kw = "stop";
+    sine_kw = "si";
+    square_kw = "sq";
+    triangle_kw = "tr";
+    rand_kw = "ra";
+    pause_kw = "ps";
+    resume_kw = "rs";
 }
 
-void Parser::reset_bt_parser(){
-    this->parse_buf_i = 0;
-    this->state = PREF;
-    this->in_progress.param1 = 0.0;
-    this->in_progress.param2 = 0.0;
-    this->in_progress.param3 = 0.0;
+int Parser::startflag() {
+	char c;
+	rs232->getchar(&c);
+
+	if (c == STARTFLAG) {
+		return 1;
+	}
+	return 0;
 }
 
-int Parser::parse_bluetooth(bt_command *cmd){
-    static unsigned int parse_denom = 1;
-    int chr_int;
-    int cmd_id;
+int Parser::getstring() {
 
     char c;
-    if (rs232->read_fifo_size()){
-        rs232->getchar(&c);
-    }
-    else {
-        return NO_CHAR;
-    }
-    
+    int i = 0;
+    int j = 0;
+    bool previous_escape = false;
 
-    if (c == TERMINATION) { // end of message found
-        this->parse_buf[this->parse_buf_i] = c;
-        if (this->state == PREF) { // terminating before full command send
-            cmd_id = INVALID_PREF;
+    do {
+    	i = rs232->getchar(&c);
+    } while (i && c != STARTFLAG);
+
+    if (c != STARTFLAG) {
+    	return 0;
+    }
+
+    i = 0;
+
+    while (i < BUFLEN) {
+    	while(!rs232->getchar(&c)) {j++;};
+
+        if (j == TIMEOUT) {
+            printf("Timeout!\n");
+            break;
         }
-        else if (this->state == CMD){ // terminating without params
-            cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
+
+        //printf("%c", c);
+
+        /* If the previous character was an escape character, this current
+         * character is part of the data. That means that we add it to our
+         * buffer regardless of whether or not it is a special character */
+        if (previous_escape) {
+            buffer[i] = c;
+            i++;
+            previous_escape = false;
         }
-        else { // terminated with some params added
-            cmd_id = (int) this->in_progress.cmd;
+
+        /* This character is an escape, but the previous character wasn't, so
+         * don't add this to the buffer and instead just mark that there was an
+         * escape. */
+        else if (c == ESCAPE) {
+            previous_escape = true;
         }
-        if (cmd_id >= 0) *cmd = this->in_progress;
-        this->reset_bt_parser();
-        return cmd_id;
+
+        /* STARTFLAG without previous_escape is bad news in a message. We are
+         * probably parsing this message incorrectly if a new message is coming
+         * in right now. We should start over. */
+        if (c == STARTFLAG) {
+            i = 0;
+            previous_escape = false;
+        }
+
+        /* All the data we need is already in the buffer */
+        else if (c == ENDFLAG) {
+            break;
+        }
+
+        /* This is just a normal character, so we add it to the buffer. */
+        else {
+            buffer[i] = c;
+            i++;
+            previous_escape = false;
+        }
     }
 
-    switch(this->state){
-        case PREF:
-            if (c == PREFIX[this->parse_buf_i]) {
-                this->parse_buf[this->parse_buf_i] = c;
-                this->parse_buf_i ++;
-                if (this->parse_buf_i >= PREFIX_LEN) this->state = CMD;
-            }
-            else {
-                this->reset_bt_parser();
-                return INVALID_PREF;
-            }
-            break;
-        case CMD:
-            if (c == ',') { // we've found end of cmd string
-                cmd_id = this->check_cmd_str(this->parse_buf, PREFIX_LEN, this->parse_buf_i - PREFIX_LEN);
-                if (cmd_id < 0 || cmd_id >= NUM_COMMANDS){
-                    this->reset_bt_parser();
-                    return INVALID_CMD;
-                }
-                else{
-                    this->in_progress.cmd = (command_t) cmd_id;
-                    this->state = PARAM1A;
-                }
-            }
-            break;
-        case PARAM1A:
-            parse_denom = 1;
-            chr_int = char_to_int(c);
-            if(c == '.') { // start of decimal portion
-                this->state = PARAM1B;
-            }
-            else if(chr_int >= 0) { // simply adding another digit
-                this->in_progress.param1 *= 10;
-                this->in_progress.param1 += chr_int;
-            }
-            else if (c == ',') { // end of number
-                this->state = PARAM2A;
-            }
-            break;
-        case PARAM1B:
-            chr_int = char_to_int(c);
-            if(chr_int >= 0) {
-                parse_denom *= 10;
-                this->in_progress.param1 += (double) chr_int / parse_denom;
-            }
-            else if (c == ',') {
-                this->state = PARAM2A;
-            }
-            break;
-
-        case PARAM2A:
-            parse_denom = 1;
-            chr_int = char_to_int(c);
-            if(c == '.') {
-                this->state = PARAM2B;
-            }
-            else if(chr_int >= 0) {
-                this->in_progress.param2 *= 10;
-                this->in_progress.param2 += chr_int;
-            }
-            else if (c == ',') {
-                this->state = PARAM3A;
-            }
-            break;
-        case PARAM2B:
-            chr_int = char_to_int(c);
-            if(chr_int >= 0) {
-                parse_denom *= 10;
-                this->in_progress.param2 += (double) chr_int / parse_denom;
-            }
-            else if (c == ',') {
-                this->state = PARAM3A;
-            }
-            break;
-        case PARAM3A:
-            parse_denom = 1;
-            chr_int = char_to_int(c);
-            if(c == '.') {
-                this->state = PARAM3B;
-            }
-            else if(chr_int >= 0) {
-                this->in_progress.param3 *= 10;
-                this->in_progress.param3 += chr_int;
-            }
-            else if (c == ',') {
-                this->state = GIB;
-            }
-            break;
-        case PARAM3B:
-            chr_int = char_to_int(c);
-            if(chr_int >= 0) {
-                parse_denom *= 10;
-                this->in_progress.param3 += (double) chr_int / parse_denom;
-            }
-            else if (c == ',') {
-                this->state = GIB;
-            }
-            break;
-        default:
-            break;
+    if (i == BUFLEN) {
+        printf("Buffer overflow!\n");
+        rs232->flush();
     }
 
-    if(this->state != PREF) {
-        this->parse_buf[this->parse_buf_i] = c;
-        this->parse_buf_i ++;
-    }
-
-    return CMD_IN_PROG; // if we've gotten to this point without returning, it means we're midway through parsing a command
+    this->size = i;
+    return i;
 }
 
-int Parser::check_cmd_str(char* str, unsigned int start, unsigned int len){
-    int cmd = -1;
-    if (len > MAX_CMD_LEN) len = MAX_CMD_LEN; // really shouldn't happen
-    
-    for(int i = 0; i < NUM_COMMANDS; i++){
-        cmd = i;
-        for(int j = 0; j < len; j++){
-            if (str[j+start]!= command_strs[i][j]) { // found inequality
-                cmd = -1;
+struct waveform_element Parser::parse_string() {
+    if (!size) {
+        printf("Error: Length 0. Return\n");
+    }
+
+    if (size > 25) {
+        printf("Error: String too long. Return\n");
+    }
+
+    string compstr(buffer);
+    compstr = compstr.substr(0,size);
+
+
+    if (!compare_string_start(compstr, start_kw)) {
+        return parse_command(compstr, start, 1);
+    } else if (!compare_string_start(compstr, stop_kw)) {
+        return parse_command(compstr, stop, 0);
+    } else if (!compare_string_start(compstr, sine_kw)) {
+        return parse_command(compstr, sine, 2);
+    } else if (!compare_string_start(compstr, square_kw)) {
+        return parse_command(compstr, square, 2);
+    } else if (!compare_string_start(compstr, rand_kw)) {
+        return parse_command(compstr, noise, 1);
+    } else if (!compare_string_start(compstr, triangle_kw)) {
+        return parse_command(compstr, triangle, 2);
+    } else if (!compare_string_start(compstr, pause_kw)) {
+        return parse_command(compstr, pause, 0);
+    } else if (!compare_string_start(compstr, resume_kw)) {
+        return parse_command(compstr, resume, 0);
+    } else {
+        struct waveform_element l = {sine, {0, 0}};
+        return l;
+    }
+}
+
+struct waveform_element Parser::parse_command(string command, int type, int num_doubles) {
+    stringstream ss(command);
+    vector<string> split;
+
+    double d1;
+    double d2;
+
+    struct waveform_element el;
+
+    while (ss.good()) {
+        string substr;
+        getline(ss, substr, ',');
+        split.push_back(substr);
+    }
+
+    if (num_doubles > 0) {
+        d1 = strtod(split[1].c_str(), NULL);
+    }
+
+    if (num_doubles > 1) {
+        d2 = strtod(split[2].c_str(), NULL);
+    }
+
+    switch(num_doubles) {
+        case 0: struct waveform_element e = {(waveform_t)type, {0}};
+                el = e;
                 break;
-            }
-            if (str[j+start] == '\0') break;
-        }
-        if (cmd > -1) break;
+        case 1: struct waveform_element f = {(waveform_t)type, {d1}};
+                el = f;
+                break;
+        case 2: struct waveform_element g = {(waveform_t)type, {d1, d2}};
+                el = g;
+                break;
     }
-    return cmd;
+
+    return el;
 }
 
-/* 
-* returns the int value for a single digit char or -1 for a period or -2 for neither
-*/
-int char_to_int(char c){
-    switch(c) {
-        case '0': return 0;
-        case '1': return 1;
-        case '2': return 2;
-        case '3': return 3;
-        case '4': return 4;
-        case '5': return 5;
-        case '6': return 6;
-        case '7': return 7;
-        case '8': return 8;
-        case '9': return 9;
-        case '.': return -1;
-    }
-    return -2;
+int Parser::compare_string_start(string compstr, string refstring) {
+    int len = refstring.length();
+
+    string substring = compstr.substr(0,len);
+	return substring.compare(refstring);
 }

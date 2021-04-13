@@ -44,21 +44,6 @@ void test_audio_square(void) {
 	}
 }
 
-void setup_audio_sine() {
-	int size = 4096;
-	double result;
-	short data = 0;
-
-	for (int i = 0; i < size; i++) {
-		result = sin(2 * 3.14159 * i/256) + (sin(2 * 3.14159 * i/128) / 8);
-		result *= amplitude;
-		data   = (short)result;
-		audio_data[i] = data;
-	}
-
-	audio_data_size = size;
-}
-
 void test_audio_sine() {
 	int i = 0;
 	short data;
@@ -175,9 +160,10 @@ void mono_bt_player(void) {
 	bool enable_audio = false;
 
 	Parser parser(&bluetooth);
+	char c;
 
 	while (1) {
-		uart_fifo = bluetooth.read_fifo_size();
+		uart_fifo = bluetooth.getchar(&c);
 		if (uart_fifo > 127) {
 			bluetooth.sendmsg("Warning: UART fifo is full!\n\0");
 		}
@@ -313,6 +299,7 @@ void sine_wave_waveform_player(void) {
 
 // Demo for waveform_player and signal_gen
 struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
+int num_waveforms;
 
 void clear_waveform_elements() {
 	struct waveform_element nothing = {noise, {0}};
@@ -320,6 +307,8 @@ void clear_waveform_elements() {
 	for (int i = 0; i < WAVEFORM_ARRAY_SIZE; i++) {
 		waveforms[i] = nothing;
 	}
+
+	num_waveforms = 0;
 
 	//SignalGen::write_waveforms(waveforms, &sdram);
 	//printf("Cleared waveform elements\n");
@@ -429,7 +418,6 @@ void waveform_player_demo(void) {
 				case 16: noisy_square();
 						break;
 				default: continue;
-						 break;
 			}
 
 
@@ -439,4 +427,97 @@ void waveform_player_demo(void) {
 	}
 }
 
+void new_parser(void) {
+	int len;
 
+	Parser parser(&bluetooth);
+
+	while (1) {
+
+		len = parser.getstring();
+
+		if (len) {
+			struct waveform_element el = parser.parse_string();
+
+			printf("Type: %d\n", el.type);
+			printf("First val %f\n", el.periodic.freq);
+
+			bluetooth.sendmsg(parser.buffer, len);
+		}
+	}
+}
+
+
+void controller(void) {
+	int len;
+	int num_samples;
+
+	double time_remaining = 0;
+	double lasttime;
+	bool playing = false;
+
+	Parser parser(&bluetooth);
+
+	while (1) {
+
+		len = parser.getstring();
+
+		if (len) {
+			struct waveform_element el = parser.parse_string();
+			bluetooth.sendmsg(parser.buffer, len);
+
+			switch (el.type) {
+				case stop:
+					clear_waveform_elements();
+					waveformplayer.stop();
+					playing = false;
+					printf("Stopped\n");
+					break;
+
+				case sine:
+				case noise:
+				case square:
+				case triangle:
+					waveforms[++num_waveforms] = el;
+					printf("New wave added\n");
+					break;
+
+				case start:
+					num_samples = SignalGen::write_waveforms(waveforms, &sdram);
+					printf("New data written to SDRAM ");
+					printf("(num samples: %d)\n", num_samples);
+					waveformplayer.setlen(num_samples);
+					time_remaining = el.simple.amplitude;
+					lasttime = (double)clock()/(double)CLOCKS_PER_SEC;
+
+					printf("Playing waveform for %f seconds\n", time_remaining);
+					waveformplayer.start();
+					playing = true;
+					break;
+
+				case pause:
+					waveformplayer.stop();
+					playing = false;
+					printf("Paused\n");
+					break;
+				case resume:
+					waveformplayer.start();
+					playing = true;
+					printf("Playing. Time remaining: %f seconds\n", time_remaining);
+					break;
+			}
+		}
+
+		if (playing) {
+			double newtime = (double)clock()/(double)CLOCKS_PER_SEC;
+			time_remaining -= (newtime - lasttime);
+			lasttime = newtime;
+
+			if (time_remaining <= 0) {
+				printf("Out of time. Stopping Waveform\n");
+				waveformplayer.stop();
+				playing = false;
+			}
+		}
+	}
+}

@@ -29,7 +29,11 @@ typedef enum {
     noise,
     square,
     triangle,
-    offset
+    offset,
+    start,
+    stop,
+    pause,
+    resume
 } waveform_t;
 
 // For sine, random, square
@@ -56,14 +60,14 @@ class control{
     private:
         int stream_audio(char* initial, unsigned int len);
 
-        bt_command command;
+        //bt_command command;
         char read_buf[READ_BUF_LEN];
         unsigned int cmd_start;
         bool playing;
     public:
         control();
         int commence();
-        int execute_cmd(struct bt_command cmd);
+    //int execute_cmd(struct bt_command cmd);
         struct waveform_element waveforms[WAVEFORM_ARRAY_SIZE];
 };
 
